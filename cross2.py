@@ -29,7 +29,7 @@ def help():
 
     def print_menu():
         print("---------------------------------------------------------------------------")
-        print("a) What is a halo file?")
+        print("a) What is a halo file!!!")
         print("b) Print a list of fields from the halo file.")
         print("c) Clear this screen.")
         print("d) What is a simulation file?")
