@@ -9,7 +9,7 @@ setup(
     packages=find_packages(),
     license='MIT',
     url='https://github.com/CPP-FIRE-Squad/stellarutil',
-    py_modules=['console', 'graph', 'simulation', 'calculations'],
+    # py_modules=['console', 'graph', 'simulation', 'calculations'],
     entry_points={
         'console_scripts': [
             'stellarutil = console:help',
