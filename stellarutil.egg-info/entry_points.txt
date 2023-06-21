@@ -1,3 +1,0 @@
-[console_scripts]
-stellarutil = console:help
-stellarutil-create = console:create
