@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='stellarutil',
-    version='0.0.3',
+    version='0.0.4',
     author='Cameron Ross',
     author_email='ceross@cpp.edu',
     description= 'A utility package for CPP Fire Squad',
@@ -15,12 +15,12 @@ setup(
         ],
     },
     install_requires=[
-        'astropy', 
-        'matplotlib', 
-        'numpy', 
-        'h5py', 
-        'pandas'
-        'scipy'
+        '<astropy>', 
+        '<matplotlib>', 
+        '<numpy>', 
+        '<h5py>', 
+        '<pandas>'
+        '<scipy>'
     ],
     
 )
