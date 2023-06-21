@@ -1,0 +1,11 @@
+README.md
+calculations.py
+console.py
+graph.py
+setup.py
+simulation.py
+stellarutil.egg-info/PKG-INFO
+stellarutil.egg-info/SOURCES.txt
+stellarutil.egg-info/dependency_links.txt
+stellarutil.egg-info/entry_points.txt
+stellarutil.egg-info/top_level.txt

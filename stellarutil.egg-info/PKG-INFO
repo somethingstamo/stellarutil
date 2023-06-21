@@ -1,0 +1,8 @@
+Metadata-Version: 2.1
+Name: stellarutil
+Version: 0.0.7
+Summary: A utility package for CPP Fire Squad
+Home-page: https://github.com/CPP-FIRE-Squad/stellarutil
+Author: Cameron Ross
+Author-email: ceross@cpp.edu
+License: MIT
