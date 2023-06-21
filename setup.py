@@ -8,11 +8,19 @@ setup(
     description= 'A utility package for CPP Fire Squad',
     license='MIT',
     url='https://github.com/CPP-FIRE-Squad/stellarutil',
-    py_modules=['cross2'],
+    py_modules=['console', 'graph', 'simulation', 'calculations'],
     entry_points={
         'console_scripts': [
-            'stellarutil = cross2:help',
+            'stellarutil = console:help',
         ],
     },
+    install_requires=[
+        'astropy', 
+        'matplotlib', 
+        'numpy', 
+        'h5py', 
+        'pandas'
+        'scipy'
+    ],
     
 )
