@@ -72,28 +72,28 @@ def help():
         if prompt == 'q' or prompt == "quit":
             break
         else:
-            match prompt:
-                case 'a':
-                    print("\tThe halo file is a summary of the data from the simulation file (.hdf5).")
-                    print("\tTo see the names of all relevant fields, enter 'b'")
-                case 'b':
-                    print_halo_fields()
-                case 'c':
-                    clear_console()
-                case 'd':
-                    print("\tThe simulation file contains information about all particles in the simulation.")
-                    print("\tNeed to edit this stuff underneath when structure changes.")
-                    print("\tCATEGORIES: star, gas")
-                    print("\tTo see the names of all relevant fields, enter 'e'")
-                    print("\tTo use: 'particles['CATEGORY']['FIELD']'")
-                case 'e':
-                    print("\tStar - position, mass, massfraction, id.child, id.generation, id, form.scalefactor, velocity")  
-                    print("\tGas - position, density, electron.fraction, temperature, mass, massfraction, hydrogen.neutral.fraction, id.child, id.generation, id, size, sfr, velocity")  
-                case 'l':
-                    list_libraries()
-                case 'm':
-                    print_menu()
-                case 'p':
-                    python_path()
-                case _:
-                    print("\tYou have not chosen a valid option.")
+           
+            if prompt == 'a':
+                print("\tThe halo file is a summary of the data from the simulation file (.hdf5).")
+                print("\tTo see the names of all relevant fields, enter 'b'")
+            elif prompt == 'b':
+                print_halo_fields()
+            elif prompt == 'c':
+                clear_console()
+            elif prompt == 'd':
+                print("\tThe simulation file contains information about all particles in the simulation.")
+                print("\tNeed to edit this stuff underneath when structure changes.")
+                print("\tCATEGORIES: star, gas")
+                print("\tTo see the names of all relevant fields, enter 'e'")
+                print("\tTo use: 'particles['CATEGORY']['FIELD']'")
+            elif prompt == 'e':
+                print("\tStar - position, mass, massfraction, id.child, id.generation, id, form.scalefactor, velocity")  
+                print("\tGas - position, density, electron.fraction, temperature, mass, massfraction, hydrogen.neutral.fraction, id.child, id.generation, id, size, sfr, velocity")  
+            elif prompt == 'l':
+                list_libraries()
+            elif prompt == 'm':
+                print_menu()
+            elif prompt == 'p':
+                python_path()
+            else:
+                print("\tYou have not chosen a valid option.")
