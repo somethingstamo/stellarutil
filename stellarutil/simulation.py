@@ -1,5 +1,6 @@
 import astropy.io.ascii as ascii
 import gizmo_analysis as gizmo
+from stellarutil.calculations import dist, filter_list
 
 #region talk to gizmo stuff
 
@@ -141,7 +142,7 @@ class Simulation:
         self.ahf_data = get_ahf_data(ahf_path)
 
 
-    def get_star_info(self, index = 0):
+    def get_stars_in_galaxy(self, index = 0):
         # Get the center of the halo
         xc = self.ahf_data.field('Xc(6)')[index] / self.h
         yc = self.ahf_data.field('Yc(7)')[index] / self.h
@@ -162,20 +163,27 @@ class Simulation:
         vx = self.particles['star']['velocity'][:,0] - vxc
         vy = self.particles['star']['velocity'][:,1] - vyc
         vz = self.particles['star']['velocity'][:,2] - vzc
-
-        # Get the stars in the galaxy
-        from calculations import dist
-        distances =  dist(x,y,z) # Get the distance of each particle from the center galaxy
-        rgal = 0.15 * self.ahf_data.field('Rvir(12)')[index] / self.h # Get the radius of the galaxy that can actually hold stars
-        
-        x_gal = x[distances < rgal] # Filter out all stars that are too far away 
-        y_gal = y[distances < rgal] # Filter out all stars that are too far away 
-        z_gal = z[distances < rgal] # Filter out all stars that are too far away 
-        a_gal = a[distances < rgal] # Filter out all stars that are too far away
-        m_gal = m[distances < rgal] # Filter out all stars that are too far away
-        vx_gal = vx[distances < rgal] # Filter out all stars that are too far away
-        vy_gal = vy[distances < rgal] # Filter out all stars that are too far away
-        vz_gal = vz[distances < rgal] # Filter out all stars that are too far away
+        # Get the distance of each star from the center galaxy
+        distances =  dist(x,y,z) 
+        # Get the radius of the galaxy that can actually hold stars
+        rgal = 0.15 * self.ahf_data.field('Rvir(12)')[index] / self.h 
+        # Filter out all stars that are too far away 
+        x_gal = filter_list(x, distances, rgal)
+        y_gal = filter_list(y, distances, rgal)
+        z_gal = filter_list(z, distances, rgal)
+        a_gal = filter_list(a, distances, rgal)
+        m_gal = filter_list(m, distances, rgal)
+        vx_gal = filter_list(vx, distances, rgal)
+        vy_gal = filter_list(vy, distances, rgal)
+        vz_gal = filter_list(vz, distances, rgal)
         v_gal = dist(vx_gal, vy_gal, vz_gal)
-
         return (x_gal, y_gal, z_gal, a_gal, m_gal, v_gal)
+
+
+    def get_field(self, field):
+        # Get the correct name of the field
+        field_name = get_field_name(self.ahf_data, field)
+        # Store all the field data in a list called column
+        column = self.ahf_data.field(field_name) 
+        # Return the column
+        return column
