@@ -12,8 +12,8 @@ setup(
     # py_modules=['console', 'graph', 'simulation', 'calculations'],
     entry_points={
         'console_scripts': [
-            'stellarutil = stellarutil.console:help',
-            'stellarutil-create = stellarutil.console:create',
+            'stellarutil = console:help',
+            'stellarutil-create = console:create',
         ],
     },
     
