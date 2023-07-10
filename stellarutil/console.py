@@ -63,6 +63,7 @@ def help():
     Recieve help on a given topic.
     You can call this function by simply typing 'stellarutil' in the command line.
     '''
+    print("Hello!")
     print_menu()
     while True:
 

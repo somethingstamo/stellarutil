@@ -1,0 +1,3 @@
+Have snopshot values in get_particles and get_hubble_constant be a Parameters
+
+Create set up script

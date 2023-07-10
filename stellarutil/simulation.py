@@ -4,7 +4,7 @@ from stellarutil.calculations import dist, filter_list
 
 #region talk to gizmo stuff
 
-def get_ahf_data(path):
+def get_ahf_data(path, filter = True):
     '''
     Read the content from the AHF file.
     
@@ -12,6 +12,8 @@ def get_ahf_data(path):
     ----------
         path : str 
             the path to the file
+        filter : boolean
+            should the data be filtered to only include rows with: fMhires(38) > 0.99. Default is true.
 
     Returns
     -------
@@ -19,8 +21,11 @@ def get_ahf_data(path):
     '''
 
     data = ascii.read(path)
-    data_filtered = data[(data.field('fMhires(38)') > 0.99)]
-    return data_filtered
+    if not filter:
+        return data
+    else:
+        data_filtered = data[(data.field('fMhires(38)') > 0.99)]
+        return data_filtered
 
 def get_field(data, field):
     '''
