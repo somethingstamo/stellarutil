@@ -5,9 +5,9 @@ A utility package for: gizmo_analysis, matplotlib, and other libraries. Made for
 
 First install dependencies:
 ```shell
-pip3 install astropy matplotlib numpy h5py pandas scipy
+pip3 install astropy matplotlib numpy h5py pandas scipy --user
 ```
 Then, run the following command:
 ```shell
-pip3 install git+https://github.com/CPP-FIRE-Squad/stellarutil.git
+pip3 install git+https://github.com/CPP-FIRE-Squad/stellarutil.git --user
 ```
