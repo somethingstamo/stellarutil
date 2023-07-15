@@ -198,16 +198,15 @@ class Simulation:
         vx_gal = filter_list(vx, distances, rgal)
         vy_gal = filter_list(vy, distances, rgal)
         vz_gal = filter_list(vz, distances, rgal)
-        v_gal = dist(vx_gal, vy_gal, vz_gal)
         
-        print(len(x_gal))
-        print(len(y_gal))
-        print(len(z_gal))
-        print(len(a_gal))
-        print(len(m_gal))
-        print(len(v_gal))
-
-        return (x_gal, y_gal, z_gal, a_gal, m_gal, v_gal)
+        # All the lists are the same length
+        # Loop through and make a list of stars
+        stars = []
+        for i in range(len(x_gal)):
+            star = Star(x_gal[i], y_gal[i], z_gal[i], m_gal[i], a_gal[i], vx_gal[i], vy_gal[i], vz_gal[i])
+            stars.append(star)
+        # Return the list of stars in the indicated dark matter halo
+        return stars
 
 
     def get_field(self, field):
