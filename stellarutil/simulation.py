@@ -138,6 +138,23 @@ def getGalaxyStarInfo(data, particles, h, index = 0):
     return (x_gal, y_gal, z_gal, a_gal, m_gal, v_gal)
 
 
+class Star:
+
+    def __init__(self, x = 0, y = 0, z = 0, m = 0, a = 0, vx = 0, vy = 0, vz = 0):
+        self.x = x
+        self.y = y
+        self.z = z
+        self.m = m
+        self.a = a
+        self.vx = vx
+        self.vy = vy
+        self.vz = vz
+    
+    def velocity(self):
+        return dist(self.vx, self.vy, self.vz)
+        
+
+
 class Simulation:
 
     def __init__(self, simulation_directory = '../data', snapshot_directory = '../data', ahf_path = "../data/snapshot_600.z0.000.AHF_halos"):
@@ -147,7 +164,7 @@ class Simulation:
         self.ahf_data = get_ahf_data(ahf_path)
 
 
-    def get_stars_in_galaxy(self, index = 0):
+    def get_stars_in_halo(self, index = 0):
         # Get the center of the halo
         xc = self.ahf_data.field('Xc(6)')[index] / self.h
         yc = self.ahf_data.field('Yc(7)')[index] / self.h
@@ -182,6 +199,14 @@ class Simulation:
         vy_gal = filter_list(vy, distances, rgal)
         vz_gal = filter_list(vz, distances, rgal)
         v_gal = dist(vx_gal, vy_gal, vz_gal)
+        
+        print(len(x_gal))
+        print(len(y_gal))
+        print(len(z_gal))
+        print(len(a_gal))
+        print(len(m_gal))
+        print(len(v_gal))
+
         return (x_gal, y_gal, z_gal, a_gal, m_gal, v_gal)
 
 
