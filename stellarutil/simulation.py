@@ -319,7 +319,7 @@ class Simulation:
         return stars
 
 
-    def get_field(self, field) -> list[int | float]:
+    def get_field(self, field):
         """
         Get the values in the column of the specified field from the .AHF_halos file.
 
