@@ -109,5 +109,5 @@ def entry():
     else:
         print("Invalid Input.\nUsage:")
         print("\tstellarutil\tSee help menu.")
-        print("\tstellarutil\tCreate a directory to start coding.")
+        print("\tstellarutil create <name>\tCreate a directory to start coding.")
     
