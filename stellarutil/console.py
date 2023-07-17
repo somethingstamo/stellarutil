@@ -28,6 +28,9 @@ def create_directory(name):
     os.system(f'echo "data" >> {name}/.gitignore')
     os.system(f'touch {name}/todo.txt')
     os.system(f'echo "This file is used to keep track of your tasks.\nIt is optional, so delete it if you wish." >> {name}/todo.txt')
+    os.system(f'touch {name}/src/main.py')
+    os.system(f'echo "from stellarutil.simulation import Simulation\n\n# Sample code - please delete if needed.\n\nsimulation = Simulation()\n\n# Print hubble constant\nprint(simulation.h)" >> {name}/src/main.py')
+
     
 
 
