@@ -78,7 +78,7 @@ def get_field_name(data, name):
             
     return None
 
-def get_hubble_constant(simulation_directory, snapshot_directory):
+def get_hubble_constant(simulation_directory, snapshot_directory, snapshot_value):
     header = gizmo.io.Read.read_header(
         simulation_directory = simulation_directory,
         snapshot_directory = snapshot_directory,
@@ -87,13 +87,13 @@ def get_hubble_constant(simulation_directory, snapshot_directory):
     )
     return header['hubble']
 
-def get_particles(simulation_directory, snapshot_directory, species):
+def get_particles(simulation_directory, snapshot_directory, species, snapshot_values):
     return gizmo.io.Read.read_snapshots(
         simulation_directory = simulation_directory,
         snapshot_directory = snapshot_directory,
         species=species, 
         snapshot_value_kind='index',
-        snapshot_values=600
+        snapshot_values=snapshot_values
     )
 
 #endregion
@@ -141,6 +141,49 @@ def getGalaxyStarInfo(data, particles, h, index = 0):
 class Star:
 
     def __init__(self, x = 0, y = 0, z = 0, m = 0, a = 0, vx = 0, vy = 0, vz = 0):
+        """
+        Initialize a new Star object.
+
+        Parameters:
+        ----------
+        x : float
+            The x position of the star.
+        y : float
+            The y position of the star.
+        z : float
+            The z position of the star.
+        m : float
+            The mass of the star.
+        a : float
+            The scale factor of the star.
+        vx : float
+            The x velocity of the star.
+        vy : float
+            The y velocity of the star.
+        vz : float
+            The z velocity of the star.
+
+        Attributes:
+        -----------
+        x : float
+            The x position of the star.
+        y : float
+            The y position of the star.
+        z : float
+            The z position of the star.
+        m : float
+            The mass of the star.
+        a : float
+            The scale factor of the star.
+        vx : float
+            The x velocity of the star.
+        vy : float
+            The y velocity of the star.
+        vz : float
+            The z velocity of the star.
+        velocity : float
+            The velocity of the star.
+        """
         self.x = x
         self.y = y
         self.z = z
@@ -149,27 +192,84 @@ class Star:
         self.vx = vx
         self.vy = vy
         self.vz = vz
+        self.velocity = self.get_velocity()
     
-    def velocity(self):
+    def get_velocity(self):
+        """
+        Get the velocity of the star by calculating the magnitude of the velocity vector.
+        
+        Returns
+        -------
+        The velocity of the star.
+        """
         return dist(self.vx, self.vy, self.vz)
     
     def __str__(self):
+        """
+        The toString method for converting the object to a string.
+        
+        Returns
+        -------
+        A stringified version of the object.
+        """
         output = f"Star:\n  Position: ({self.x}, {self.y}, {self.z}) [kpc]\n  Mass: {self.m} [unit]\n  Scale Factor (a): {self.a} [unit]\n  Velocity: {self.velocity()} [kpc/s]"
         return output
 
-        
-
-
 class Simulation:
 
-    def __init__(self, simulation_directory = '../data', snapshot_directory = '../data', ahf_path = "../data/snapshot_600.z0.000.AHF_halos"):
+    def __init__(self, simulation_directory = '../data', snapshot_directory = '../data', ahf_directory = "../data/snapshot_600.z0.000.AHF_halos", species = ['star']):
+        """
+        Initialize a new Simulation object.
 
-        self.h = get_hubble_constant(simulation_directory, snapshot_directory)
-        self.particles = get_particles(simulation_directory, snapshot_directory, ['star'])
-        self.ahf_data = get_ahf_data(ahf_path)
+        Parameters:
+        ----------
+        simulation_directory : string
+            The path to the .hdf5 file. Default is '../data'.
+        snapshot_directory : string
+            The path to the snapshot_times.txt. Default is '../data'.
+        ahf_directory : string
+            The path to the .AHF_halos file. Default is '../data'
+        species : list
+            name[s] of particle species:
+                'all' = all species in file
+                'dark' = dark matter at highest resolution
+                'dark2' = dark matter at lower resolution
+                'gas' = gas
+                'star' = stars
+                'blackhole' = black holes, if snapshot contains them
+        snapshot_values : int or float or list
+            index[s] or redshift[s] or scale-factor[s] of snapshot[s]
+
+        Attributes:
+        -----------
+        h : float
+            The hubble constant.
+        particles : float
+            The data for all the indicated particles in the simulation.
+        ahf_data : float
+            The data within the .AHF_halos file.
+        """
+
+        self.h = get_hubble_constant(simulation_directory, snapshot_directory, snapshot_value = 600)
+        self.particles = get_particles(simulation_directory, snapshot_directory, species, snapshot_values = 600)
+        self.ahf_data = get_ahf_data(ahf_directory)
 
 
-    def get_stars_in_halo(self, index = 0, restrict = 0.15) -> list[Star]:
+    def get_stars_in_halo(self, index = 0, restrict = 0.15):
+        """
+        Get the list of stars inside an indicated dark matter halo.
+
+        Parameters:
+        ----------
+        index : int
+            The index of the dark matter halo. Default is 0.
+        restrict : float
+            The restriction percentage. Default is 0.15 (15%).
+        
+        Returns
+        -------
+        The list of all stars in the indicated dark matter halo.
+        """
         # Get the center of the indicated dark matter halo
         xc = self.ahf_data.field('Xc(6)')[index] / self.h
         yc = self.ahf_data.field('Yc(7)')[index] / self.h
@@ -192,6 +292,8 @@ class Simulation:
         vx = self.particles['star']['velocity'][:,0] - vxc
         vy = self.particles['star']['velocity'][:,1] - vyc
         vz = self.particles['star']['velocity'][:,2] - vzc
+
+
         # Get the distance of each star from the center of the indicated dark matter halo
         distances =  dist(x,y,z) 
         # Get the radius of the galaxy that can actually hold stars
@@ -205,6 +307,7 @@ class Simulation:
         vx_gal = filter_list(vx, distances, rgal)
         vy_gal = filter_list(vy, distances, rgal)
         vz_gal = filter_list(vz, distances, rgal)
+
         
         # All the lists are the same length
         # Loop through and make a list of stars
@@ -216,7 +319,19 @@ class Simulation:
         return stars
 
 
-    def get_field(self, field):
+    def get_field(self, field) -> list[int | float]:
+        """
+        Get the values in the column of the specified field from the .AHF_halos file.
+
+        Parameters:
+        ----------
+        field : string
+            The name of the field.
+        
+        Returns
+        -------
+        The list of values in that field.
+        """
         # Get the correct name of the field
         field_name = get_field_name(self.ahf_data, field)
         # Store all the field data in a list called column
