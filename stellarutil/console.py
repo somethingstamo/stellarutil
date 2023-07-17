@@ -22,13 +22,12 @@ def create_directory(name):
     print(f"Creating a directory named {name}.")
 
     os.system(f'mkdir {name}')
-    os.system(f'cd {name}')
-    os.system(f'mkdir src')
-    os.system(f'mkdir data') 
-    os.system(f'touch .gitignore')
-    os.system(f'echo "data" >> .gitignore')
-    os.system(f'touch todo.txt')
-    os.system(f'echo "This file is used to keep track of your tasks.\nIt is optional, so delete it if you wish." >> todo.txt')
+    os.system(f'mkdir {name}/src')
+    os.system(f'mkdir {name}/data') 
+    os.system(f'touch {name}/.gitignore')
+    os.system(f'echo "data" >> {name}/.gitignore')
+    os.system(f'touch {name}/todo.txt')
+    os.system(f'echo "This file is used to keep track of your tasks.\nIt is optional, so delete it if you wish." >> {name}/todo.txt')
     
 
 
