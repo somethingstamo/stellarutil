@@ -108,6 +108,6 @@ def entry():
         create_directory(sys.argv[2] if num_args == 3 else "galaxy")
     else:
         print("Invalid Input.\nUsage:")
-        print("\tstellarutil\tSee help menu.")
+        print("\tstellarutil\t\tSee help menu.")
         print("\tstellarutil create <name>\tCreate a directory to start coding.")
     
