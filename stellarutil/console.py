@@ -20,6 +20,8 @@ def python_path():
 
 def create_directory(name):
     print(f"Creating a directory named {name}.")
+    print(f"Put any data files in {name}/data.")
+    print(f"Put any code files in {name}/src.")
 
     os.system(f'mkdir {name}')
     os.system(f'mkdir {name}/src')
@@ -44,6 +46,7 @@ def print_menu():
         print("l) Print the list of libraries installed via pip3.")
         print("m) Print menu.")
         print("p) Print python paths.")
+        print("o) Create new project directory.")
         print("q) Quit.")
         print("---------------------------------------------------------------------------")
 
@@ -71,7 +74,6 @@ def help():
     Recieve help on a given topic.
     You can call this function by simply typing 'stellarutil' in the command line.
     '''
-    print("Hello!")
     print_menu()
     while True:
 
@@ -104,6 +106,9 @@ def help():
                 print_menu()
             elif prompt == 'p':
                 python_path()
+            elif prompt == 'o':
+                name = input("\nWhat do you want to name the directory: ")
+                create_directory(name)
             else:
                 print("\tYou have not chosen a valid option.")
 
