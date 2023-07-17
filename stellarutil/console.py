@@ -1,4 +1,4 @@
-import os
+import os, sys
 
 def clear_console():
     '''
@@ -100,7 +100,8 @@ def help():
                 print("\tYou have not chosen a valid option.")
 
 
-def entry(args):
+def entry():
+    args = sys.argv
     print(args)
     if args == None:
         help()
