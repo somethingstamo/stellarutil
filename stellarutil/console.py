@@ -4,11 +4,7 @@ def clear_console():
     '''
     Clear the console.
     '''
-    if os.name == 'posix':  # Unix/Linux/MacOS
-        os.system('clear')
-    else:  # Windows
-        print("should be clearing the console on windows.")
-        os.system('cls')
+    os.system('clear')
 
 def list_libraries():
     '''
@@ -23,7 +19,17 @@ def python_path():
     os.system("echo $PYTHONPATH | tr ':' '\n'")
 
 def create_directory(name):
-    print("Create a work directory here.")
+    print(f"Creating a directory named {name}.")
+
+    os.system(f'mkdir {name}')
+    os.system(f'cd {name}')
+    os.system(f'mkdir src')
+    os.system(f'mkdir data') 
+    os.system(f'touch .gitignore')
+    os.system(f'echo "data" >> .gitignore')
+    os.system(f'touch todo.txt')
+    os.system(f'echo "This file is used to keep track of your tasks.\nIt is optional, so delete it if you wish." >> todo.txt')
+    
 
 
 def print_menu():
@@ -105,7 +111,7 @@ def entry():
     if num_args == 1:
         help()
     elif (num_args == 2 or num_args == 3) and sys.argv[1] == "create":
-        create_directory(sys.argv[2] if num_args == 3 else "galaxy")
+        create_directory(sys.argv[2] if num_args == 3 else "galaxy_research")
     else:
         print("Invalid Input.\nUsage:")
         print("\tstellarutil\t\t\tSee help menu.")
