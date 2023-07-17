@@ -22,7 +22,7 @@ def python_path():
     '''
     os.system("echo $PYTHONPATH | tr ':' '\n'")
 
-def create_directory():
+def create_directory(name):
     print("Create a work directory here.")
 
 
@@ -101,9 +101,13 @@ def help():
 
 
 def entry():
-    args = sys.argv
-    print(args)
-    if args == None:
+    num_args = len(sys.args)
+    if num_args == 1:
         help()
-    elif args == "create":
-        create_directory()
+    elif (num_args == 2 or num_args == 3) and sys.argv[1] == "create":
+        create_directory(sys.argv[2] if num_args == 3 else "galaxy")
+    else:
+        print("Invalid Input.\nUsage:")
+        print("\tstellarutil\tSee help menu.")
+        print("\tstellarutil\tCreate a directory to start coding.")
+    
