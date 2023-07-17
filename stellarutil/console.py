@@ -22,7 +22,7 @@ def python_path():
     '''
     os.system("echo $PYTHONPATH | tr ':' '\n'")
 
-def create():
+def create_directory():
     print("Create a work directory here.")
 
 
@@ -98,3 +98,11 @@ def help():
                 python_path()
             else:
                 print("\tYou have not chosen a valid option.")
+
+
+def entry(args):
+    print(args)
+    if args == None:
+        help()
+    elif args == "create":
+        create_directory()
