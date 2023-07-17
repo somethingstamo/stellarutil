@@ -101,7 +101,7 @@ def help():
 
 
 def entry():
-    num_args = len(sys.args)
+    num_args = len(sys.argv)
     if num_args == 1:
         help()
     elif (num_args == 2 or num_args == 3) and sys.argv[1] == "create":
