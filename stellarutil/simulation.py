@@ -154,7 +154,7 @@ class Star:
         return dist(self.vx, self.vy, self.vz)
     
     def __str__(self):
-        output = f"Star <{id(self)}>\n\tPosition: ({self.x}, {self.y}, {self.z}) [kpc]\n\tMass: {self.m} [unit]\n\tScale Factor (a): {self.a} [unit]\n\tVelocity: {self.velocity()} [kpc/s]"
+        output = f"Star:\n  Position: ({self.x}, {self.y}, {self.z}) [kpc]\n  Mass: {self.m} [unit]\n  Scale Factor (a): {self.a} [unit]\n  Velocity: {self.velocity()} [kpc/s]"
         return output
 
         
@@ -169,16 +169,17 @@ class Simulation:
         self.ahf_data = get_ahf_data(ahf_path)
 
 
-    def get_stars_in_halo(self, index = 0):
-        # Get the center of the halo
+    def get_stars_in_halo(self, index = 0, restrict = 0.15):
+        # Get the center of the indicated dark matter halo
         xc = self.ahf_data.field('Xc(6)')[index] / self.h
         yc = self.ahf_data.field('Yc(7)')[index] / self.h
         zc = self.ahf_data.field('Zc(8)')[index] / self.h
-        # Get the peculiar velocity of halo
+        # Get the peculiar velocity of the indicated dark matter halo
         vxc = self.ahf_data.field('VXc(9)')[index] / self.h
         vyc = self.ahf_data.field('VYc(10)')[index] / self.h
         vzc = self.ahf_data.field('VZc(11)')[index] / self.h
-        # Get the x,y,z positions of each star particle in the simulation, and normalize it with the galaxy center
+        # Get the x,y,z positions of each star particle in the simulation
+        # And normalize it with the center of the indicated dark matter halo
         x = self.particles['star']['position'][:,0] - xc
         y = self.particles['star']['position'][:,1] - yc
         z = self.particles['star']['position'][:,2] - zc
@@ -186,14 +187,15 @@ class Simulation:
         a = self.particles['star']['form.scalefactor']
         # Get the mass of each star in the simulation
         m = self.particles['star']['mass']
-        # Get the x,y,z velocity of each star particle in the simulation, and normalize it with the velocity center
+        # Get the x,y,z velocity of each star particle in the simulation
+        # And normalize it with the peculiar velocity of the indicated dark matter halo
         vx = self.particles['star']['velocity'][:,0] - vxc
         vy = self.particles['star']['velocity'][:,1] - vyc
         vz = self.particles['star']['velocity'][:,2] - vzc
-        # Get the distance of each star from the center galaxy
+        # Get the distance of each star from the center of the indicated dark matter halo
         distances =  dist(x,y,z) 
         # Get the radius of the galaxy that can actually hold stars
-        rgal = 0.15 * self.ahf_data.field('Rvir(12)')[index] / self.h 
+        rgal = restrict * self.ahf_data.field('Rvir(12)')[index] / self.h 
         # Filter out all stars that are too far away 
         x_gal = filter_list(x, distances, rgal)
         y_gal = filter_list(y, distances, rgal)
