@@ -152,6 +152,11 @@ class Star:
     
     def velocity(self):
         return dist(self.vx, self.vy, self.vz)
+    
+    def __str__(self):
+        output = f"Star <{id(self)}>\n\tPosition: ({self.x}, {self.y}, {self.z}) [kpc]\n\tMass: {self.m} [unit]\n\tScale Factor (a): {self.a} [unit]\n\tVelocity: {self.velocity()} [kpc/s]"
+        return output
+
         
 
 

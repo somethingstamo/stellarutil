@@ -114,6 +114,10 @@ def help():
 
 
 def entry():
+    '''
+    This function is an entry point for command line interaction.
+    Not intended to be called manually.
+    '''
     num_args = len(sys.argv)
     if num_args == 1:
         help()
