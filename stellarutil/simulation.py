@@ -294,6 +294,7 @@ class Simulation:
         vz = self.particles['star']['velocity'][:,2] - vzc
         # Check AHF file for the number of stars in the the indicated dark matter halo
         num_stars = self.ahf_data.field('n_star(64)')[index]
+        print(f"This dark matter halo has {num_stars} star(s) according to the AHF file.")
         # Ensure the percentage has proper bounds
         if percentage < 0:
             percentage = 0
@@ -315,9 +316,12 @@ class Simulation:
             vx_gal = filter_list(vx, distances, rgal)
             vy_gal = filter_list(vy, distances, rgal)
             vz_gal = filter_list(vz, distances, rgal)
+
+            print(f"Found {len(x_gal)} star(s) at {percentage}%")
+
             # Check to see if all the stars have been captured
             if len(x_gal) == num_stars:
-                print(f"Found all {num_stars} star(s) at {percentage * 100}%")
+                print(f"Found all star(s) at {percentage}%")
                 break
 
             # Increase percentage for next iteration
