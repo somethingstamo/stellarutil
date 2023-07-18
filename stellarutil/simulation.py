@@ -255,7 +255,7 @@ class Simulation:
         self.ahf_data = get_ahf_data(ahf_directory)
 
 
-    def get_stars_in_halo(self, index = 0, percentage = 0.15):
+    def get_stars_in_halo(self, index = 0, percentage = 15):
         """
         Get the list of stars inside an indicated dark matter halo.
 
@@ -294,14 +294,19 @@ class Simulation:
         vz = self.particles['star']['velocity'][:,2] - vzc
         # Check AHF file for the number of stars in the the indicated dark matter halo
         num_stars = self.ahf_data.field('n_star(64)')[index]
-        
-        while percentage < 1.0:
+        # Ensure the percentage has proper bounds
+        if percentage < 0:
+            percentage = 0
+        else:
+            percentage = 100
+        # Loop through and capture the stars 
+        while percentage <= 100:
             # Get the distance of each star from the center of the indicated dark matter halo
             distances =  dist(x,y,z) 
             # Get the radius of the galaxy that can actually hold stars
-            rgal = percentage * self.ahf_data.field('Rvir(12)')[index] / self.h 
+            rgal = (percentage / 100.0) * self.ahf_data.field('Rvir(12)')[index] / self.h 
             # Filter out all stars that are too far away 
-            print(f"Filtering at: {percentage * 100}%")
+            print(f"Filtering at: {percentage}%")
             x_gal = filter_list(x, distances, rgal)
             y_gal = filter_list(y, distances, rgal)
             z_gal = filter_list(z, distances, rgal)
@@ -316,7 +321,7 @@ class Simulation:
                 break
 
             # Increase percentage for next iteration
-            percentage += 0.05
+            percentage += 5
 
         # All the lists are the same length
         # Loop through and make a list of stars
