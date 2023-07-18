@@ -83,7 +83,7 @@ def get_hubble_constant(simulation_directory, snapshot_directory, snapshot_value
         simulation_directory = simulation_directory,
         snapshot_directory = snapshot_directory,
         snapshot_value_kind = 'index',
-        snapshot_value = 600
+        snapshot_value = snapshot_value
     )
     return header['hubble']
 
@@ -217,7 +217,7 @@ class Star:
 
 class Simulation:
 
-    def __init__(self, simulation_directory = '../data', snapshot_directory = '../data', ahf_directory = "../data/snapshot_600.z0.000.AHF_halos", species = ['star']):
+    def __init__(self, simulation_directory = '../data', snapshot_directory = '../data', ahf_directory = "../data/snapshot_600.z0.000.AHF_halos", species = ['star'], snapshot_values = 600, snapshot_value = 600):
         """
         Initialize a new Simulation object.
 
@@ -250,8 +250,8 @@ class Simulation:
             The data within the .AHF_halos file.
         """
 
-        self.h = get_hubble_constant(simulation_directory, snapshot_directory, snapshot_value = 600)
-        self.particles = get_particles(simulation_directory, snapshot_directory, species, snapshot_values = 600)
+        self.h = get_hubble_constant(simulation_directory, snapshot_directory, snapshot_value)
+        self.particles = get_particles(simulation_directory, snapshot_directory, species, snapshot_values)
         self.ahf_data = get_ahf_data(ahf_directory)
 
 
