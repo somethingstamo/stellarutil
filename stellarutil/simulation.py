@@ -298,7 +298,7 @@ class Simulation:
         # Ensure the percentage has proper bounds
         if percentage < 0:
             percentage = 0
-        else:
+        elif percentage > 100:
             percentage = 100
         # Loop through and capture the stars 
         while percentage <= 100:
