@@ -255,7 +255,7 @@ class Simulation:
         self.ahf_data = get_ahf_data(ahf_directory)
 
 
-    def get_stars_in_halo(self, index = 0, restrict = 0.15):
+    def get_stars_in_halo(self, index = 0, percentage = 0.15):
         """
         Get the list of stars inside an indicated dark matter halo.
 
@@ -292,23 +292,32 @@ class Simulation:
         vx = self.particles['star']['velocity'][:,0] - vxc
         vy = self.particles['star']['velocity'][:,1] - vyc
         vz = self.particles['star']['velocity'][:,2] - vzc
-
-
-        # Get the distance of each star from the center of the indicated dark matter halo
-        distances =  dist(x,y,z) 
-        # Get the radius of the galaxy that can actually hold stars
-        rgal = restrict * self.ahf_data.field('Rvir(12)')[index] / self.h 
-        # Filter out all stars that are too far away 
-        x_gal = filter_list(x, distances, rgal)
-        y_gal = filter_list(y, distances, rgal)
-        z_gal = filter_list(z, distances, rgal)
-        a_gal = filter_list(a, distances, rgal)
-        m_gal = filter_list(m, distances, rgal)
-        vx_gal = filter_list(vx, distances, rgal)
-        vy_gal = filter_list(vy, distances, rgal)
-        vz_gal = filter_list(vz, distances, rgal)
-
+        # Check AHF file for the number of stars in the the indicated dark matter halo
+        num_stars = self.ahf_data.field('n_star(64)')[index]
         
+        while percentage < 1.0:
+            # Get the distance of each star from the center of the indicated dark matter halo
+            distances =  dist(x,y,z) 
+            # Get the radius of the galaxy that can actually hold stars
+            rgal = percentage * self.ahf_data.field('Rvir(12)')[index] / self.h 
+            # Filter out all stars that are too far away 
+            print(f"Filtering at: {percentage * 100}%")
+            x_gal = filter_list(x, distances, rgal)
+            y_gal = filter_list(y, distances, rgal)
+            z_gal = filter_list(z, distances, rgal)
+            a_gal = filter_list(a, distances, rgal)
+            m_gal = filter_list(m, distances, rgal)
+            vx_gal = filter_list(vx, distances, rgal)
+            vy_gal = filter_list(vy, distances, rgal)
+            vz_gal = filter_list(vz, distances, rgal)
+            # Check to see if all the stars have been captured
+            if len(x_gal) == num_stars:
+                print(f"Found all {num_stars} star(s) at {percentage * 100}%")
+                break
+
+            # Increase percentage for next iteration
+            percentage += 0.05
+
         # All the lists are the same length
         # Loop through and make a list of stars
         stars = []
