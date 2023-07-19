@@ -113,7 +113,7 @@ def help():
                 print("\tYou have not chosen a valid option.")
 
 
-def entry():
+def welcome():
     '''
     This function is an entry point for command line interaction.
     Not intended to be called manually.

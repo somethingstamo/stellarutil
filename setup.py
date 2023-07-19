@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='stellarutil',
-    version='0.0.37',
+    version='0.0.39',
     author='Cameron Ross',
     author_email='ceross@cpp.edu',
     description= 'A utility package for CPP Fire Squad',
@@ -12,7 +12,7 @@ setup(
     # py_modules=['console', 'graph', 'simulation', 'calculations'],
     entry_points={
         'console_scripts': [
-            'stellarutil = stellarutil.console:entry',
+            'stellarutil = stellarutil.console:welcome',
         ],
     },   
 )
