@@ -325,7 +325,12 @@ class Simulation:
                 break
 
             # Increase percentage for next iteration
-            percentage += 5
+            percentage += 1
+
+            # TODO - replace this pseudocode
+            # x = x_gal - mean(x_gal)
+            # y = y_gal - mean(y_gal)
+            # z = z_gal - mean(z_gal)
 
         # All the lists are the same length
         # Loop through and make a list of stars
@@ -333,9 +338,9 @@ class Simulation:
         for i in range(len(x_gal)):
             star = Star(x_gal[i], y_gal[i], z_gal[i], m_gal[i], a_gal[i], vx_gal[i], vy_gal[i], vz_gal[i])
             stars.append(star)
+
         # Return the list of stars in the indicated dark matter halo
         return stars
-
 
     def get_field(self, field):
         """

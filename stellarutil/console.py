@@ -33,9 +33,6 @@ def create_directory(name):
     os.system(f'touch {name}/src/main.py')
     os.system(f'echo "from stellarutil.simulation import Simulation\n\n# Sample code - please delete if needed.\n\nsimulation = Simulation()\n\n# Print hubble constant\nprint(simulation.h)" >> {name}/src/main.py')
 
-    
-
-
 def print_menu():
         print("---------------------------------------------------------------------------")
         print("a) What is a halo file (.AHF_halos)?")
@@ -111,7 +108,6 @@ def help():
                 create_directory(name)
             else:
                 print("\tYou have not chosen a valid option.")
-
 
 def command_line_interact():
     '''

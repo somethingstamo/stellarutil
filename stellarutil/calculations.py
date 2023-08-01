@@ -21,8 +21,6 @@ def dist(x, y, z):
     result = np.sqrt(np.square(x) + np.square(y) + np.square(z))
     return result
 
-
-
 def filter_list(list, distances, rgal):
     '''
     Filter a list, comparing each corresponding distance to rgal.

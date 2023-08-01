@@ -1,0 +1,25 @@
+data
+	m10q_res250
+		output
+			snapdirs folder or single snapshot file
+		gbins
+			snapdirs folder or single binary file
+		analysis
+			AHF
+				_code
+				AHF.input
+				halo_files
+					AHF file outputs here
+			Rockstar
+	m10v_res30
+		
+	
+
+
+
+
+
+
+
+output example: /scratch/03280/crwheele/new_sims/core/m10r_res250md/output/snapdir_600
+corresponding AHF halo: /scratch/03280/crwheele/new_sims/core/m10r_res250md/analysis/AHF/halo_files/halos/snapshot_600.AHF_halos
