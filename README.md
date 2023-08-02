@@ -20,6 +20,11 @@ Here is the documentation for each module:
  - [Calculations](./documentation/calculations.md)
  - [Graph](./documentation/graph.md)
 
+
+[Here](./documentation/gizmo_analysis/) is the documentation for gizmo_analysis:
+
+
+
 ## Sample Usage
 ```python 
 from stellarutil.simulation import Simulation
