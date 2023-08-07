@@ -252,7 +252,7 @@ class Simulation:
         self.ahf_data = get_ahf_data(ahf_path)
 
 
-    def get_stars_in_halo(self, index = 0, percentage = 15):
+    def get_stars_in_halo(self, index = 0, percentage = 100):
         """
         Get the list of stars inside an indicated dark matter halo.
 
