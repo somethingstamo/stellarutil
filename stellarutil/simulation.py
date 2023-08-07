@@ -1,5 +1,4 @@
-import astropy.io.ascii as ascii
-import gizmo_analysis as gizmo
+import os, gizmo_analysis as gizmo, astropy.io.ascii as ascii
 from stellarutil.calculations import dist, filter_list
 
 #region talk to gizmo stuff
@@ -78,64 +77,26 @@ def get_field_name(data, name):
             
     return None
 
-def get_hubble_constant(simulation_directory, snapshot_directory, snapshot_value):
+def get_hubble_constant(simulation_directory, snapshot_directory, snapshot_value, snapshot_value_kind):
     header = gizmo.io.Read.read_header(
         simulation_directory = simulation_directory,
         snapshot_directory = snapshot_directory,
-        snapshot_value_kind = 'index',
+        snapshot_value_kind = snapshot_value_kind,
         snapshot_value = snapshot_value
     )
     return header['hubble']
 
-def get_particles(simulation_directory, snapshot_directory, species, snapshot_values):
+def get_particles(simulation_directory, snapshot_directory, species, snapshot_values, snapshot_value_kind):
     return gizmo.io.Read.read_snapshots(
         simulation_directory = simulation_directory,
         snapshot_directory = snapshot_directory,
         species=species, 
-        snapshot_value_kind='index',
+        snapshot_value_kind=snapshot_value_kind,
         snapshot_values=snapshot_values
     )
 
 #endregion
 
-
-def getGalaxyStarInfo(data, particles, h, index = 0):
-    # Get the center of the halo
-    xc = data.field('Xc(6)')[index] / h
-    yc = data.field('Yc(7)')[index] / h
-    zc = data.field('Zc(8)')[index] / h
-    # Get the peculiar velocity of halo
-    vxc = data.field('VXc(9)')[index] / h
-    vyc = data.field('VYc(10)')[index] / h
-    vzc = data.field('VZc(11)')[index] / h
-    # Get the x,y,z positions of each star particle in the simulation, and normalize it with the galaxy center
-    x = particles['star']['position'][:,0] - xc
-    y = particles['star']['position'][:,1] - yc
-    z = particles['star']['position'][:,2] - zc
-    # Get the scalefactor (age) of each star in the simulation
-    a = particles['star']['form.scalefactor']
-    # Get the mass of each star in the simulation
-    m = particles['star']['mass']
-    # Get the x,y,z velocity of each star particle in the simulation, and normalize it with the velocity center
-    vx = particles['star']['velocity'][:,0] - vxc
-    vy = particles['star']['velocity'][:,1] - vyc
-    vz = particles['star']['velocity'][:,2] - vzc
-
-    # Get the stars in the galaxy
-    from calculations import dist
-    distances =  dist(x,y,z) # Get the distance of each particle from the center galaxy
-    rgal = 0.15 * data.field('Rvir(12)')[index] / h # Get the radius of the galaxy that can actually hold stars
-    x_gal = x[distances < rgal] # Filter out all stars that are too far away 
-    y_gal = y[distances < rgal] # Filter out all stars that are too far away 
-    z_gal = z[distances < rgal] # Filter out all stars that are too far away 
-    a_gal = a[distances < rgal] # Filter out all stars that are too far away
-    m_gal = m[distances < rgal] # Filter out all stars that are too far away
-    vx_gal = vx[distances < rgal] # Filter out all stars that are too far away
-    vy_gal = vy[distances < rgal] # Filter out all stars that are too far away
-    vz_gal = vz[distances < rgal] # Filter out all stars that are too far away
-    v_gal = dist(vx_gal, vy_gal, vz_gal)
-
-    return (x_gal, y_gal, z_gal, a_gal, m_gal, v_gal)
 
 
 class Star:
@@ -217,18 +178,29 @@ class Star:
 
 class Simulation:
 
-    def __init__(self, simulation_directory = '../data', snapshot_directory = '../data', ahf_directory = "../data/snapshot_600.z0.000.AHF_halos", species = ['star'], snapshot_values = 600, snapshot_value = 600):
+    def __init__(
+            self, 
+            simulation_name = None,
+            simulation_directory = None, 
+            snapshot_directory = None,
+            ahf_directory = None, 
+            species = ['star'], 
+            snapshot_value_kind='index',
+            snapshot_values = 600
+        ):
         """
         Initialize a new Simulation object.
 
         Parameters:
         ----------
+        simulation_name : string
+            The name of the simulation. By giving the name, it will look for simulation_directory/snapshot_directory/ahf_directory in '../data/{simulation_name}'
         simulation_directory : string
-            The path to the .hdf5 file. Default is '../data'.
+            The path to the .hdf5 file. 
         snapshot_directory : string
-            The path to the snapshot_times.txt. Default is '../data'.
+            The path to the snapshot_times.txt. 
         ahf_directory : string
-            The path to the .AHF_halos file. Default is '../data'
+            The path to the .AHF_halos file.
         species : list
             name[s] of particle species:
                 'all' = all species in file
@@ -250,8 +222,28 @@ class Simulation:
             The data within the .AHF_halos file.
         """
 
-        self.h = get_hubble_constant(simulation_directory, snapshot_directory, snapshot_value)
-        self.particles = get_particles(simulation_directory, snapshot_directory, species, snapshot_values)
+        # If a simulation name has been given, we can assume the user is using the conventional locations
+        if simulation_name is not None:
+            simulation_directory = f'../data/{simulation_name}'
+            snapshot_directory = 'output'
+            # Look for the file that ends with '.AHF_halos'.
+            items = os.listdir(simulation_directory)
+            for item in items:
+                file_path = os.path.join(simulation_directory, item)
+                if not os.path.isdir(file_path):
+                    print(file_path)
+        else:
+            if simulation_directory is None or snapshot_directory is None or ahf_directory is None:
+                print('Cannot read files. Either:')
+                print('\t1) Provide a simulation_name while adhering to the proper structure.')
+                print('\t2) Manually specify: simulation_directory, snapshot_directory, and ahf_directory.')
+                return
+            
+        # Snpashot value is used to get the hubble constant, it will always be a subset of the snapshot_values
+        snapshot_value = snapshot_values[0] if type(snapshot_values) is list else snapshot_values
+        # Get the data from gizmo_analysis
+        self.h = get_hubble_constant(simulation_directory, snapshot_directory, snapshot_value, snapshot_value_kind)
+        self.particles = get_particles(simulation_directory, snapshot_directory, species, snapshot_values, snapshot_value_kind)
         self.ahf_data = get_ahf_data(ahf_directory)
 
 
