@@ -183,7 +183,7 @@ class Simulation:
             simulation_name = None,
             simulation_directory = None, 
             snapshot_directory = None,
-            ahf_directory = None, 
+            ahf_path = None, 
             species = ['star'], 
             snapshot_value_kind='index',
             snapshot_values = 600
@@ -194,7 +194,8 @@ class Simulation:
         Parameters:
         ----------
         simulation_name : string
-            The name of the simulation. By giving the name, it will look for simulation_directory/snapshot_directory/ahf_directory in '../data/{simulation_name}'
+            The name of the simulation. 
+            By giving the name, it will look for simulation_directory/snapshot_directory/ahf_directory in '../data/{simulation_name}'
         simulation_directory : string
             The path to the .hdf5 file. 
         snapshot_directory : string
@@ -232,8 +233,8 @@ class Simulation:
                 file_path = os.path.join(simulation_directory, item)
                 if not os.path.isdir(file_path) and item.endswith('.AHF_halos'):
                     print(file_path)
-                    ahf_directory = file_path
-            if ahf_directory is None:
+                    ahf_path = file_path
+            if ahf_path is None:
                 print(f'Could not find an ahf_directory in: {simulation_directory}')
                 return
         else:
@@ -248,7 +249,7 @@ class Simulation:
         # Get the data from gizmo_analysis
         self.h = get_hubble_constant(simulation_directory, snapshot_directory, snapshot_value, snapshot_value_kind)
         self.particles = get_particles(simulation_directory, snapshot_directory, species, snapshot_values, snapshot_value_kind)
-        self.ahf_data = get_ahf_data(ahf_directory)
+        self.ahf_data = get_ahf_data(ahf_path)
 
 
     def get_stars_in_halo(self, index = 0, percentage = 15):
