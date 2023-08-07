@@ -230,8 +230,12 @@ class Simulation:
             items = os.listdir(simulation_directory)
             for item in items:
                 file_path = os.path.join(simulation_directory, item)
-                if not os.path.isdir(file_path):
+                if not os.path.isdir(file_path) and item.endswith('.AHF_halos'):
                     print(file_path)
+                    ahf_directory = file_path
+            if ahf_directory is None:
+                print(f'Could not find an ahf_directory in: {simulation_directory}')
+                return
         else:
             if simulation_directory is None or snapshot_directory is None or ahf_directory is None:
                 print('Cannot read files. Either:')
