@@ -238,7 +238,7 @@ class Simulation:
                 print(f'Could not find an ahf_directory in: {simulation_directory}')
                 return
         else:
-            if simulation_directory is None or snapshot_directory is None or ahf_directory is None:
+            if simulation_directory is None or snapshot_directory is None or ahf_path is None:
                 print('Cannot read files. Either:')
                 print('\t1) Provide a simulation_name while adhering to the proper structure.')
                 print('\t2) Manually specify: simulation_directory, snapshot_directory, and ahf_directory.')
