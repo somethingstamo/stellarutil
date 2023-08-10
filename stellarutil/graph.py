@@ -1,8 +1,17 @@
-import matplotlib.pyplot as plt
-import re, numpy as np
+import re, numpy as np,  matplotlib.colors as mcolors, matplotlib.pyplot as plt
 
 
-def star_scatter_plot(x, y, z, parts = None, whole = None):
+def histogram(data, bins, title  = 'Historgram', x_label = 'Value', y_label = 'Frequency'):
+    # Create a histogram
+    plt.hist(data, bins=bins)
+    # Add labels and title
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    plt.title(title)
+    # Show the histogram
+    plt.show()
+
+def star_scatter_plot(x, y, z, parts = None):
     '''
     Generate a scatter plot by supplying a list of x, y, and z values.
 
@@ -21,27 +30,28 @@ def star_scatter_plot(x, y, z, parts = None, whole = None):
 
     '''
 
+    if parts is not None:
+        # Normalize the parts values for colormap
+        norm = mcolors.Normalize(vmin=0, vmax=0.5)
+        # Create a colormap for the gradient
+        cmap = plt.cm.get_cmap('viridis')
+        # Get colors from the colormap based on normalized parts values
+        colors = [cmap(norm(part)) for part in parts]
+
+    # Create figure
     ax = plt.axes(projection='3d')
-    fig = plt.gcf()
-    scatter = None
-
-    if parts is not None and whole is not None:
-        colors = np.array([part / whole for part in parts])  # Calculate color based on the ratio
-        colors = np.where(colors > 0.5, 'green', 'blue')
-        # Generate a scatter plot with the specified colors
-        # vmin = 0, vmax = 0.5
-        scatter = ax.scatter3D(x, y, z, c=colors, cmap='Blues')
-    else:
-        # Generate a scatter plot without color mapping
-        scatter = ax.scatter3D(x, y, z)
-
-    fig.colorbar(scatter)
-
+    ax.scatter(x, y, z, c=colors, marker='o')
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
     ax.set_zlabel('Z')
     ax.set_title('3D Scatter Plot')
     ax.grid(False)
+    # Create color bar
+    sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
+    sm.set_array([])
+    cbar = plt.colorbar(sm)
+    cbar.set_label('Parts Value')
+    # Show figure
     plt.show()
 
 def pie_chart(values, labels):
@@ -102,6 +112,8 @@ def graph(x, y, title = None, x_label = None, y_label = None, windowTitle = "Fig
     fig.canvas.manager.set_window_title(windowTitle)
     # Display the graph
     plt.show()
+
+
 
 def plot_gas_dens(part,data,header,runname,bins=70,ind=0,thick=None,vmin=None,vmax = None):
     """
