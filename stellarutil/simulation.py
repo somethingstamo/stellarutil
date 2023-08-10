@@ -200,7 +200,7 @@ class Simulation:
             The path to the .hdf5 file. 
         snapshot_directory : string
             The path to the snapshot_times.txt. 
-        ahf_directory : string
+        ahf_path : string
             The path to the .AHF_halos file.
         species : list
             name[s] of particle species:
