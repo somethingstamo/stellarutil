@@ -11,6 +11,24 @@ def histogram(data, bins, title  = 'Historgram', x_label = 'Value', y_label = 'F
     # Show the histogram
     plt.show()
 
+def stars_scatter_plot(stars1, stars2):
+    '''
+
+    '''
+    # Create figure
+    ax = plt.axes(projection='3d')
+    colors1 = ['blue' for star in stars1]
+    colors2 = ['red' for star in stars1]
+    ax.scatter([star.x for star in stars1], [star.y for star in stars1], [star.z for star in stars1], colors1)
+    ax.scatter([star.x for star in stars2], [star.y for star in stars2], [star.z for star in stars2], colors2)
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
+    ax.set_title('3D Scatter Plot')
+    ax.grid(False)
+    # Show figure
+    plt.show()
+
 def star_scatter_plot(x, y, z, parts = None):
     '''
     Generate a scatter plot by supplying a list of x, y, and z values.
@@ -170,3 +188,4 @@ def plot_gas_dens(part,data,header,runname,bins=70,ind=0,thick=None,vmin=None,vm
     cbar = plt.colorbar()
     cbar.ax.setylabel(r'$\rm log ,\Sigma ,(M{\odot}/pc^2)$', fontsize = 22)
     plt.savefig("FDensHist%s%i%i.png"%(runname,thick,bins))
+ 
