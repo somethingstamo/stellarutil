@@ -29,7 +29,50 @@ def stars_scatter_plot(stars1, stars2):
     # Show figure
     plt.show()
 
-def star_scatter_plot(x, y, z, parts = None):
+def star_scatter_plot(stars, parts = None):
+    '''
+    Generate a scatter plot by supplying a list of x, y, and z values.
+
+    Parameters:
+    ----------
+        x : list
+            The list of x values.
+        y : list
+            The list of y values.
+        z : list
+            The list of z values.
+        parts : list
+            list of values (like form.scalar factor) associated with each star
+        whole : number
+            the whole number to compare to each part
+
+    '''
+
+    if parts is not None:
+        # Normalize the parts values for colormap
+        norm = mcolors.Normalize(vmin=0, vmax=0.5)
+        # Create a colormap for the gradient
+        cmap = plt.cm.get_cmap('viridis')
+        # Get colors from the colormap based on normalized parts values
+        colors = [cmap(norm(part)) for part in parts]
+
+    # Create figure
+    ax = plt.axes(projection='3d')
+    ax.scatter([star.x for star in stars], [star.y for star in stars], [star.z for star in stars], c=colors, marker='o')
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
+    ax.set_title('3D Scatter Plot')
+    ax.grid(False)
+    # Create color bar
+    sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
+    sm.set_array([])
+    cbar = plt.colorbar(sm)
+    cbar.set_label('Parts Value')
+    # Show figure
+    plt.show()
+
+def scatter_plot(x, y, z, parts = None):
     '''
     Generate a scatter plot by supplying a list of x, y, and z values.
 
