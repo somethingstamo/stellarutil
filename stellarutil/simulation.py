@@ -182,7 +182,7 @@ class Simulation:
             self, 
             simulation_name = None,
             simulation_directory = None, 
-            snapshot_directory = None,
+            snapshot_directory = 'output',
             ahf_path = None, 
             species = ['star'], 
             snapshot_value_kind='index',
@@ -238,10 +238,17 @@ class Simulation:
                 print(f'Could not find an ahf_directory in: {simulation_directory}')
                 return
         else:
-            if simulation_directory is None or snapshot_directory is None or ahf_path is None:
+            if simulation_directory is None or ahf_path is None:
                 print('Cannot read files. Either:')
                 print('\t1) Provide a simulation_name while adhering to the proper structure.')
-                print('\t2) Manually specify: simulation_directory, snapshot_directory, and ahf_directory.')
+                print('\t\tExample:  sim = Simulation("m10r_res250md")')
+                print('\t2) Manually specify: simulation_directory and ahf_directory. Also, specify the snapshot directory if it is not output.\n')
+                print('\t\tExample:  sim = Simulation(simulation_directory="path", ahf_path="path")')
+                print('\t\tExample:  sim = Simulation(simulation_directory="path", ahf_path="path", snapshot_directory="path")')
+                if simulation_directory is None:
+                    print('Missing simulation directory.') 
+                if ahf_path is None:
+                    print('Missing ahf_path.') 
                 return
             
         # Snpashot value is used to get the hubble constant, it will always be a subset of the snapshot_values
