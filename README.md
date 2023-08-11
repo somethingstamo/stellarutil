@@ -33,7 +33,7 @@ sim = Simulation()
 # Print hubble constant
 print(sim.h)
 # Mvir vs Mstar
-graph(sim.get_field('Mvir'), sim.get_field('Mstar'), "Mvir vs Mstar", showLine=False)
+graph(sim.get_field('Mvir'), sim.get_field('Mstar'), "Mvir vs Mstar", showLine=False, logx=True, logy=True)
 # star mass histogram
 masses = [star.m for star in stars]
 histogram(masses, bins = 10, title='Mass Distribution', x_label='Mass') 
