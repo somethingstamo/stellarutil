@@ -302,7 +302,8 @@ class Simulation:
             # Get the distance of each star from the center of the indicated dark matter halo
             distances =  dist(x,y,z) 
             # Get the radius of the galaxy that can actually hold stars
-            rgal = (percentage / 100.0) * self.ahf_data.field('Rvir(12)')[index] / self.h 
+            # Rhalo, Mhalo, Vhalo <-> Rvir, Mvir, Vvir
+            rgal = (percentage / 100.0) * self.get_field('12')[index] / self.h 
             # Filter out all stars that are too far away 
             print(f"Filtering at: {percentage}%")
             x_gal = filter_list(x, distances, rgal)
