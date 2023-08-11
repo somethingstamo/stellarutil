@@ -1,5 +1,6 @@
 import os, gizmo_analysis as gizmo, astropy.io.ascii as ascii
 from stellarutil.calculations import dist, filter_list
+from stellarutil.console import help
 
 #region talk to gizmo stuff
 
@@ -258,7 +259,6 @@ class Simulation:
         self.particles = get_particles(simulation_directory, snapshot_directory, species, snapshot_values, snapshot_value_kind)
         self.ahf_data = get_ahf_data(ahf_path)
 
-
     def get_stars_in_halo(self, index = 0, percentage = 100):
         """
         Get the list of stars inside an indicated dark matter halo.
@@ -377,3 +377,6 @@ class Simulation:
         column = self.ahf_data.field(field_name) 
         # Return the column
         return column
+    
+    def help():
+        help()
