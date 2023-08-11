@@ -378,5 +378,5 @@ class Simulation:
         # Return the column
         return column
     
-    def help():
+    def help(self):
         help()
