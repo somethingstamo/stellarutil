@@ -347,6 +347,17 @@ class Simulation:
         # Return the list of stars in the indicated dark matter halo
         return stars
 
+    def center_on(self, stars, my_index, center_index):
+        # Get the center relative to the halo at the given index
+        xc = self.get_field('Xc(6)')[my_index] / self.h - self.get_field('Xc(6)')[center_index] / self.h
+        yc = self.get_field('Yc(7)')[my_index] / self.h - self.get_field('Yc(7)')[center_index] / self.h
+        zc = self.get_field('Zc(8)')[my_index] / self.h - self.get_field('Zc(8)')[center_index] / self.h
+        # Recenter each star in the list
+        for star in stars:
+            star.x -= xc
+            star.y -= yc
+            star.z -= zc
+
     def get_field(self, field):
         """
         Get the values in the column of the specified field from the .AHF_halos file.
