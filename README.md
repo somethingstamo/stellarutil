@@ -28,7 +28,13 @@ Here is the documentation for each module:
 ## Sample Usage
 ```python 
 from stellarutil.simulation import Simulation
-simulation = Simulation()
+from stellarutil.graph import graph, star_scatter_plot, histogram, stars_scatter_plot
+sim = Simulation()
 # Print hubble constant
-print(simulation.h)
+print(sim.h)
+# Mvir vs Mstar
+graph(sim.get_field('Mvir'), sim.get_field('Mstar'), "Mvir vs Mstar", showLine=False)
+# star mass histogram
+masses = [star.m for star in stars]
+histogram(masses, bins = 10, title='Mass Distribution', x_label='Mass') 
 ```

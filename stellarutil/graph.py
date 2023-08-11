@@ -133,7 +133,7 @@ def pie_chart(values, labels):
     ax.legend(loc="best")
     plt.show()
 
-def graph(x, y, title = None, x_label = None, y_label = None, windowTitle = "Figure", showLine = True):
+def graph(x, y, title = None, x_label = None, y_label = None, windowTitle = "Figure", showLine = True, logx = False, logy = False):
     '''
     Generate a 2d graph with given x and y values.
 
@@ -154,6 +154,11 @@ def graph(x, y, title = None, x_label = None, y_label = None, windowTitle = "Fig
             x_label = x_label if x_label is not None else after
             y_label = y_label if y_label is not None else before
 
+    # Log the lists
+    if logx:
+        x = np.log10(x)
+    if logy:
+        y = np.log10(y)
 
     # Create a line plot
     if(showLine):
