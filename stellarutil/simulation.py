@@ -239,12 +239,12 @@ class Simulation:
                 return
         else:
             if simulation_directory is None or ahf_path is None:
-                print('Cannot read files. Either:')
+                print('Cannot read files. Either:\n')
                 print('\t1) Provide a simulation_name while adhering to the proper structure.')
                 print('\t\tExample:  sim = Simulation("m10r_res250md")')
-                print('\t2) Manually specify: simulation_directory and ahf_directory. Also, specify the snapshot directory if it is not output.\n')
+                print('\t2) Manually specify: simulation_directory and ahf_directory. Also, specify the snapshot directory if it is not output.')
                 print('\t\tExample:  sim = Simulation(simulation_directory="path", ahf_path="path")')
-                print('\t\tExample:  sim = Simulation(simulation_directory="path", ahf_path="path", snapshot_directory="path")')
+                print('\t\tExample:  sim = Simulation(simulation_directory="path", ahf_path="path", snapshot_directory="path")\n')
                 if simulation_directory is None:
                     print('Missing simulation directory.') 
                 if ahf_path is None:
