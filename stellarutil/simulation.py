@@ -303,9 +303,9 @@ class Simulation:
         z = self.particles['star']['position'][:,2] - zc
 
         # TODO - replace this pseudocode
-        x = x - np.mean(x)
-        y = y - np.mean(y)
-        z = z - np.mean(z)
+        # x = x - np.mean(x)
+        # y = y - np.mean(y)
+        # z = z - np.mean(z)
 
         # Get the scalefactor (age) of each star in the simulation
         a = self.particles['star']['form.scalefactor']
