@@ -1,4 +1,4 @@
-import os, gizmo_analysis as gizmo, astropy.io.ascii as ascii
+import os, gizmo_analysis as gizmo, astropy.io.ascii as ascii, numpy as np
 from stellarutil.calculations import dist, filter_list
 from stellarutil.console import help
 
@@ -177,6 +177,20 @@ class Star:
         output = f"Star:\n  Position: ({self.x}, {self.y}, {self.z}) [kpc]\n  Mass: {self.m} [unit]\n  Scale Factor (a): {self.a} [unit]\n  Velocity: {self.velocity()} [kpc/s]"
         return output
 
+
+class Halo:
+
+    def __init__(self, index, stars, xc, yc, zc, vxc, vyc, vzc):
+        self.index = index
+        self.stars = stars
+        self.xc = xc
+        self.yc = yc
+        self.zc = zc
+        self.vxc = vxc
+        self.vyc = vyc
+        self.vzc = vzc
+
+
 class Simulation:
 
     def __init__(
@@ -259,7 +273,7 @@ class Simulation:
         self.particles = get_particles(simulation_directory, snapshot_directory, species, snapshot_values, snapshot_value_kind)
         self.ahf_data = get_ahf_data(ahf_path)
 
-    def get_stars_in_halo(self, index = 0, percentage = 100):
+    def get_halo(self, index = 0):
         """
         Get the list of stars inside an indicated dark matter halo.
 
@@ -287,6 +301,12 @@ class Simulation:
         x = self.particles['star']['position'][:,0] - xc
         y = self.particles['star']['position'][:,1] - yc
         z = self.particles['star']['position'][:,2] - zc
+
+        # TODO - replace this pseudocode
+        x = x - np.mean(x)
+        y = y - np.mean(y)
+        z = z - np.mean(z)
+
         # Get the scalefactor (age) of each star in the simulation
         a = self.particles['star']['form.scalefactor']
         # Get the mass of each star in the simulation
@@ -298,44 +318,20 @@ class Simulation:
         vz = self.particles['star']['velocity'][:,2] - vzc
         # Check AHF file for the number of stars in the the indicated dark matter halo
         num_stars = self.ahf_data.field('n_star(64)')[index]
-        print(f"This dark matter halo has {num_stars} star(s) according to the AHF file.")
-        # Ensure the percentage has proper bounds
-        if percentage < 0:
-            percentage = 0
-        elif percentage > 100:
-            percentage = 100
-        # Loop through and capture the stars 
-        while percentage <= 100:
-            # Get the distance of each star from the center of the indicated dark matter halo
-            distances =  dist(x,y,z) 
-            # Get the radius of the galaxy that can actually hold stars
-            # Rhalo, Mhalo, Vhalo <-> Rvir, Mvir, Vvir
-            rgal = (percentage / 100.0) * self.get_field('12')[index] / self.h 
-            # Filter out all stars that are too far away 
-            print(f"Filtering at: {percentage}%")
-            x_gal = filter_list(x, distances, rgal)
-            y_gal = filter_list(y, distances, rgal)
-            z_gal = filter_list(z, distances, rgal)
-            a_gal = filter_list(a, distances, rgal)
-            m_gal = filter_list(m, distances, rgal)
-            vx_gal = filter_list(vx, distances, rgal)
-            vy_gal = filter_list(vy, distances, rgal)
-            vz_gal = filter_list(vz, distances, rgal)
-
-            print(f"Found {len(x_gal)} star(s) at {percentage}%")
-
-            # Check to see if all the stars have been captured
-            if len(x_gal) == num_stars:
-                print(f"Found all star(s) at {percentage}%")
-                break
-
-            # Increase percentage for next iteration
-            percentage += 1
-
-            # TODO - replace this pseudocode
-            # x = x_gal - mean(x_gal)
-            # y = y_gal - mean(y_gal)
-            # z = z_gal - mean(z_gal)
+        # Get the distance of each star from the center of the indicated dark matter halo
+        distances =  dist(x,y,z) 
+        # Get the radius of the galaxy that can actually hold stars
+        # Rhalo, Mhalo, Vhalo <-> Rvir, Mvir, Vvir
+        rgal = self.get_field('12')[index] / self.h 
+        # Filter out all stars that are too far away 
+        x_gal = filter_list(x, distances, rgal)
+        y_gal = filter_list(y, distances, rgal)
+        z_gal = filter_list(z, distances, rgal)
+        a_gal = filter_list(a, distances, rgal)
+        m_gal = filter_list(m, distances, rgal)
+        vx_gal = filter_list(vx, distances, rgal)
+        vy_gal = filter_list(vy, distances, rgal)
+        vz_gal = filter_list(vz, distances, rgal)
 
         # All the lists are the same length
         # Loop through and make a list of stars
@@ -344,16 +340,17 @@ class Simulation:
             star = Star(x_gal[i], y_gal[i], z_gal[i], m_gal[i], a_gal[i], vx_gal[i], vy_gal[i], vz_gal[i])
             stars.append(star)
 
-        # Return the list of stars in the indicated dark matter halo
-        return stars
+        # Return the indicated dark matter halo
+        halo = Halo(index, stars, xc, yc, zc, vxc, vyc, vzc)
+        return halo
 
-    def center_on(self, stars, my_index, center_index):
+    def center_on(self, halo, center_index):
         # Get the center relative to the halo at the given index
-        xc = self.get_field('Xc(6)')[my_index] / self.h - self.get_field('Xc(6)')[center_index] / self.h
-        yc = self.get_field('Yc(7)')[my_index] / self.h - self.get_field('Yc(7)')[center_index] / self.h
-        zc = self.get_field('Zc(8)')[my_index] / self.h - self.get_field('Zc(8)')[center_index] / self.h
+        xc = self.get_field('Xc(6)')[halo.index] / self.h - self.get_field('Xc(6)')[center_index] / self.h
+        yc = self.get_field('Yc(7)')[halo.index] / self.h - self.get_field('Yc(7)')[center_index] / self.h
+        zc = self.get_field('Zc(8)')[halo.index] / self.h - self.get_field('Zc(8)')[center_index] / self.h
         # Recenter each star in the list
-        for star in stars:
+        for star in halo.stars:
             star.x -= xc
             star.y -= yc
             star.z -= zc
