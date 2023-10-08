@@ -166,6 +166,16 @@ class Star:
         """
         return dist(self.vx, self.vy, self.vz)
     
+    def get_r(self):
+        """
+        Get the 3d radius of the star from the center of the halo.
+        
+        Returns
+        -------
+        The radius (r) of the star.
+        """
+        return dist(self.x, self.y, self.z)
+    
     def __str__(self):
         """
         The toString method for converting the object to a string.
