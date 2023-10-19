@@ -272,10 +272,22 @@ class Simulation:
             if ahf_path is None:
                 print(f'Could not find an ahf_directory in: {simulation_directory}')
                 return
+        elif simulation_directory is not None and ahf_path is None and snapshot_directory is None:
+            snapshot_directory = 'output'
+            # Look for the file that ends with '.AHF_halos'.
+            items = os.listdir(simulation_directory)
+            for item in items:
+                file_path = os.path.join(simulation_directory, item)
+                if not os.path.isdir(file_path) and item.endswith('.AHF_halos'):
+                    print(file_path)
+                    ahf_path = file_path
+            if ahf_path is None:
+                print(f'Could not find an ahf_directory in: {simulation_directory}')
+                return
         else:
             if simulation_directory is None or ahf_path is None:
                 print('Cannot read files. Either:\n')
-                print('\t1) Provide a simulation_name while adhering to the proper structure.')
+                print('\t1) Provide a simulation_name while adhering to the proper folder structure.')
                 print('\t\tExample:  sim = Simulation("m10r_res250md")')
                 print('\t2) Manually specify: simulation_directory and ahf_directory. Also, specify the snapshot directory if it is not output.')
                 print('\t\tExample:  sim = Simulation(simulation_directory="path", ahf_path="path")')
