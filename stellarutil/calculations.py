@@ -17,10 +17,7 @@ def dist(x, y, z = None):
     -------
         The magnitude of the vector.
     '''
-
-    if x != None and y != None and z != None: return np.sqrt(np.square(x) + np.square(y) + np.square(z))
-    elif x != None and y != None: return np.sqrt(np.square(x) + np.square(y))
-    else: print('Invalid input.') 
+    return np.sqrt(np.square(x) + np.square(y) + np.square(z))
 
 def filter_list(list, distances, rgal):
     '''

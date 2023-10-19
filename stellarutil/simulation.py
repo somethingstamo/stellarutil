@@ -174,7 +174,8 @@ class Star:
         -------
         The radius (r) of the star.
         """
-        return dist(self.x, self.y, self.z)
+        return np.sqrt(np.square(self.x) + np.square(self.y)+ np.square(self.z))
+
     
     def get_2DR(self):
         """
@@ -184,7 +185,7 @@ class Star:
         -------
         The radius (r) of the star.
         """
-        return dist(self.x, self.y)
+        return np.sqrt(np.square(self.x) + np.square(self.y))
     
     def __str__(self):
         """
