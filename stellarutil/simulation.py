@@ -176,7 +176,6 @@ class Star:
         """
         return np.sqrt(np.square(self.x) + np.square(self.y)+ np.square(self.z))
 
-    
     def get_2DR(self):
         """
         Get the 2d radius of the star from the center of the halo.
@@ -201,7 +200,8 @@ class Star:
 
 class Halo:
 
-    def __init__(self, index, stars, xc, yc, zc, vxc, vyc, vzc):
+    def __init__(self, simulation, index, stars, xc, yc, zc, vxc, vyc, vzc):
+        self.simulation = simulation
         self.index = index
         self.stars = stars
         self.xc = xc
@@ -211,6 +211,87 @@ class Halo:
         self.vyc = vyc
         self.vzc = vzc
 
+    def restrict_percentage(self, percentage = 15):
+        # Get the radius of the galaxy that can actually hold stars
+        # Rhalo, Mhalo, Vhalo <-> Rvir, Mvir, Vvir
+        rgal = (percentage / 100.0) * self.simulation.get_field('12')[self.index] / self.sinulation.h 
+        # Get all the stars and center on the given halo
+        x = self.simulation.particles['star']['position'][:,0] - self.xc
+        y = self.simulation.particles['star']['position'][:,1] - self.yc
+        z = self.simulation.particles['star']['position'][:,2] - self.zc
+        a = self.simulation.particles['star']['form.scalefactor']
+        m = self.simulation.particles['star']['mass']
+        vx = self.simulation.particles['star']['velocity'][:,0] - self.vxc
+        vy = self.simulation.particles['star']['velocity'][:,1] - self.vyc
+        vz = self.simulation.particles['star']['velocity'][:,2] - self.vzc
+        # Get the distance of each star from the center of the indicated dark matter halo
+        distances =  dist(x,y,z) 
+        # Filter out all stars that are too far away 
+        x_gal = filter_list(x, distances, rgal)
+        y_gal = filter_list(y, distances, rgal)
+        z_gal = filter_list(z, distances, rgal)
+        a_gal = filter_list(a, distances, rgal)
+        m_gal = filter_list(m, distances, rgal)
+        vx_gal = filter_list(vx, distances, rgal)
+        vy_gal = filter_list(vy, distances, rgal)
+        vz_gal = filter_list(vz, distances, rgal)
+        # Create a new stars list
+        new_stars = []
+        for i in range(len(x_gal)):
+            star = Star(x_gal[i], y_gal[i], z_gal[i], m_gal[i], a_gal[i], vx_gal[i], vy_gal[i], vz_gal[i])
+            new_stars.append(star)
+        # Update the halos star list
+        self.stars = new_stars
+
+    def restrict_slice(self, face = 'xy', proj_distance = 1, thickness = 1):
+        x = self.simulation.particles['star']['position'][:,0] - self.xc
+        y = self.simulation.particles['star']['position'][:,1] - self.yc
+        z = self.simulation.particles['star']['position'][:,2] - self.zc
+        a = self.simulation.particles['star']['form.scalefactor']
+        m = self.simulation.particles['star']['mass']
+        vx = self.simulation.particles['star']['velocity'][:,0] - self.vxc
+        vy = self.simulation.particles['star']['velocity'][:,1] - self.vyc
+        vz = self.simulation.particles['star']['velocity'][:,2] - self.vzc
+        # Get sqrt of the given face
+        roots = []
+        for i in range(len(x)):
+            if face == 'xy' or face == 'yx': roots.append( (x**2 + y**2) ** .5 )
+            elif face == 'xz' or face == 'zx': roots.append( (x**2 + z**2) ** .5 )
+            elif face == 'yz' or face == 'zy': roots.append( (y**2 + z**2) ** .5 )
+
+        # restrict all stars whose: sqrt(×^2 + y^2) < proj_distance
+        x_gal = filter_list(x, roots, proj_distance)
+        y_gal = filter_list(y, roots, proj_distance)
+        z_gal = filter_list(z, roots, proj_distance)
+        a_gal = filter_list(a, roots, proj_distance)
+        m_gal = filter_list(m, roots, proj_distance)
+        vx_gal = filter_list(vx, roots, proj_distance)
+        vy_gal = filter_list(vy, roots, proj_distance)
+        vz_gal = filter_list(vz, roots, proj_distance)
+        # Create a new stars list
+        new_stars = []
+        for i in range(len(x_gal)):
+            star = Star(x_gal[i], y_gal[i], z_gal[i], m_gal[i], a_gal[i], vx_gal[i], vy_gal[i], vz_gal[i])
+            # restrict all stars whose |z pos| < thickness
+            if face == 'xy' or face == 'yx':
+                if abs(z_gal[i]) < thickness: new_stars.append(star)
+            elif face == 'xz' or face == 'zx':
+                if abs(y_gal[i]) < thickness: new_stars.append(star)
+            elif face == 'yz' or face == 'zy':
+                if abs(x_gal[i]) < thickness: new_stars.append(star)
+        # Update the halos star list
+        self.stars = new_stars
+
+    def center_on(self, otherIndex):
+        # Get the center relative to the halo at the given index
+        xc = (self.simulation.get_field('Xc(6)')[self.index] / self.simulation.h) - (self.get_field('Xc(6)')[otherIndex] / self.simulation.h)
+        yc = (self.simulation.get_field('Yc(7)')[self.index] / self.simulation.h) - (self.get_field('Yc(7)')[otherIndex] / self.simulation.h)
+        zc = (self.simulation.get_field('Zc(8)')[self.index] / self.simulation.h) - (self.get_field('Zc(8)')[otherIndex] / self.simulation.h)
+        # Recenter each star in the list
+        for star in self.stars:
+            star.x -= xc
+            star.y -= yc
+            star.z -= zc
 
 class Simulation:
 
@@ -374,89 +455,6 @@ class Simulation:
         # Return the indicated dark matter halo
         halo = Halo(index, stars, xc, yc, zc, vxc, vyc, vzc)
         return halo
-
-    def restrict_percentage(self, halo, percentage = 15):
-        # Get the radius of the galaxy that can actually hold stars
-        # Rhalo, Mhalo, Vhalo <-> Rvir, Mvir, Vvir
-        rgal = (percentage / 100.0) * self.get_field('12')[halo.index] / self.h 
-        # Get all the stars and center on the given halo
-        x = self.particles['star']['position'][:,0] - halo.xc
-        y = self.particles['star']['position'][:,1] - halo.yc
-        z = self.particles['star']['position'][:,2] - halo.zc
-        a = self.particles['star']['form.scalefactor']
-        m = self.particles['star']['mass']
-        vx = self.particles['star']['velocity'][:,0] - halo.vxc
-        vy = self.particles['star']['velocity'][:,1] - halo.vyc
-        vz = self.particles['star']['velocity'][:,2] - halo.vzc
-        # Get the distance of each star from the center of the indicated dark matter halo
-        distances =  dist(x,y,z) 
-        # Filter out all stars that are too far away 
-        x_gal = filter_list(x, distances, rgal)
-        y_gal = filter_list(y, distances, rgal)
-        z_gal = filter_list(z, distances, rgal)
-        a_gal = filter_list(a, distances, rgal)
-        m_gal = filter_list(m, distances, rgal)
-        vx_gal = filter_list(vx, distances, rgal)
-        vy_gal = filter_list(vy, distances, rgal)
-        vz_gal = filter_list(vz, distances, rgal)
-        # Create a new stars list
-        new_stars = []
-        for i in range(len(x_gal)):
-            star = Star(x_gal[i], y_gal[i], z_gal[i], m_gal[i], a_gal[i], vx_gal[i], vy_gal[i], vz_gal[i])
-            new_stars.append(star)
-        # Update the halos star list
-        halo.stars = new_stars
-
-    def restrict_slice(self, halo, stars, face = 'xy', proj_distance = 1, thickness = 1):
-        x = self.particles['star']['position'][:,0] - halo.xc
-        y = self.particles['star']['position'][:,1] - halo.yc
-        z = self.particles['star']['position'][:,2] - halo.zc
-        a = self.particles['star']['form.scalefactor']
-        m = self.particles['star']['mass']
-        vx = self.particles['star']['velocity'][:,0] - halo.vxc
-        vy = self.particles['star']['velocity'][:,1] - halo.vyc
-        vz = self.particles['star']['velocity'][:,2] - halo.vzc
-        # Get sqrt of the given face
-        roots = []
-        for i in range(len(x)):
-            if face == 'xy' or face == 'yx': roots.append( (x**2 + y**2) ** .5 )
-            elif face == 'xz' or face == 'zx': roots.append( (x**2 + z**2) ** .5 )
-            elif face == 'yz' or face == 'zy': roots.append( (y**2 + z**2) ** .5 )
-
-        # restrict all stars whose: sqrt(×^2 + y^2) < proj_distance
-        x_gal = filter_list(x, roots, proj_distance)
-        y_gal = filter_list(y, roots, proj_distance)
-        z_gal = filter_list(z, roots, proj_distance)
-        a_gal = filter_list(a, roots, proj_distance)
-        m_gal = filter_list(m, roots, proj_distance)
-        vx_gal = filter_list(vx, roots, proj_distance)
-        vy_gal = filter_list(vy, roots, proj_distance)
-        vz_gal = filter_list(vz, roots, proj_distance)
-        # Create a new stars list
-        new_stars = []
-        for i in range(len(x_gal)):
-            star = Star(x_gal[i], y_gal[i], z_gal[i], m_gal[i], a_gal[i], vx_gal[i], vy_gal[i], vz_gal[i])
-            # restrict all stars whose |z pos| < thickness
-            if face == 'xy' or face == 'yx':
-                if abs(z_gal[i]) < thickness: new_stars.append(star)
-            elif face == 'xz' or face == 'zx':
-                if abs(y_gal[i]) < thickness: new_stars.append(star)
-            elif face == 'yz' or face == 'zy':
-                if abs(x_gal[i]) < thickness: new_stars.append(star)
-        # Update the halos star list
-        halo.stars = new_stars
-
-
-    def center_on(self, halo, center_index):
-        # Get the center relative to the halo at the given index
-        xc = self.get_field('Xc(6)')[halo.index] / self.h - self.get_field('Xc(6)')[center_index] / self.h
-        yc = self.get_field('Yc(7)')[halo.index] / self.h - self.get_field('Yc(7)')[center_index] / self.h
-        zc = self.get_field('Zc(8)')[halo.index] / self.h - self.get_field('Zc(8)')[center_index] / self.h
-        # Recenter each star in the list
-        for star in halo.stars:
-            star.x -= xc
-            star.y -= yc
-            star.z -= zc
 
     def get_field(self, field):
         """
