@@ -1,5 +1,5 @@
 import os, gizmo_analysis as gizmo, astropy.io.ascii as ascii, numpy as np
-from stellarutil.calculations import dist, filter_list, dist2D
+from stellarutil.calculations import dist, filter_list
 from stellarutil.console import help
 
 #region talk to gizmo stuff
