@@ -257,11 +257,10 @@ class Simulation:
         ahf_data : float
             The data within the .AHF_halos file.
         """
-
+        print('running og')
         # If a simulation name has been given, we can assume the user is using the conventional locations
         if simulation_name is not None:
             simulation_directory = f'../data/{simulation_name}'
-            snapshot_directory = 'output'
             # Look for the file that ends with '.AHF_halos'.
             items = os.listdir(simulation_directory)
             for item in items:
@@ -272,15 +271,16 @@ class Simulation:
             if ahf_path is None:
                 print(f'Could not find an ahf_directory in: {simulation_directory}')
                 return
-        elif simulation_directory is not None and ahf_path is None and snapshot_directory is None:
-            snapshot_directory = 'output'
+        elif simulation_directory is not None and ahf_path is None:
+            print('running')
             # Look for the file that ends with '.AHF_halos'.
             items = os.listdir(simulation_directory)
             for item in items:
                 file_path = os.path.join(simulation_directory, item)
+                print(file_path)
                 if not os.path.isdir(file_path) and item.endswith('.AHF_halos'):
-                    print(file_path)
                     ahf_path = file_path
+                    break
             if ahf_path is None:
                 print(f'Could not find an ahf_directory in: {simulation_directory}')
                 return
