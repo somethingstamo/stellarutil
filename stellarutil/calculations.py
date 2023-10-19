@@ -1,6 +1,6 @@
 import numpy as np
 
-def dist(x, y, z):
+def dist(x, y, z = None):
     '''
     Get the magnitude of a vector with three components (x, y, z).
 
@@ -18,8 +18,9 @@ def dist(x, y, z):
         The magnitude of the vector.
     '''
 
-    result = np.sqrt(np.square(x) + np.square(y) + np.square(z))
-    return result
+    if x != None and y != None and z != None: return np.sqrt(np.square(x) + np.square(y) + np.square(z))
+    elif x != None and y != None: return np.sqrt(np.square(x) + np.square(y))
+    else: print('Invalid input.') 
 
 def filter_list(list, distances, rgal):
     '''

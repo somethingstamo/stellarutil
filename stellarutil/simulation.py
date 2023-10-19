@@ -1,5 +1,5 @@
 import os, gizmo_analysis as gizmo, astropy.io.ascii as ascii, numpy as np
-from stellarutil.calculations import dist, filter_list
+from stellarutil.calculations import dist, filter_list, dist2D
 from stellarutil.console import help
 
 #region talk to gizmo stuff
@@ -257,7 +257,6 @@ class Simulation:
         ahf_data : float
             The data within the .AHF_halos file.
         """
-        print('running og')
         # If a simulation name has been given, we can assume the user is using the conventional locations
         if simulation_name is not None:
             simulation_directory = f'../data/{simulation_name}'
@@ -272,14 +271,13 @@ class Simulation:
                 print(f'Could not find an ahf_directory in: {simulation_directory}')
                 return
         elif simulation_directory is not None and ahf_path is None:
-            print('running')
             # Look for the file that ends with '.AHF_halos'.
             items = os.listdir(simulation_directory)
             for item in items:
                 file_path = os.path.join(simulation_directory, item)
-                print(file_path)
                 if not os.path.isdir(file_path) and item.endswith('.AHF_halos'):
                     ahf_path = file_path
+                    print('Found AHF file here: ' + ahf_path)
                     break
             if ahf_path is None:
                 print(f'Could not find an ahf_directory in: {simulation_directory}')
