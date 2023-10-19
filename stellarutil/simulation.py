@@ -1,6 +1,6 @@
 import os, gizmo_analysis as gizmo, astropy.io.ascii as ascii, numpy as np
 from stellarutil.calculations import dist, filter_list
-from stellarutil.console import help
+from stellarutil.console import help, clear_console
 
 #region talk to gizmo stuff
 
@@ -164,7 +164,7 @@ class Star:
         -------
         The velocity of the star.
         """
-        return dist(self.vx, self.vy, self.vz)
+        return np.sqrt(np.square(self.vx) + np.square(self.vy)+ np.square(self.vz))
     
     def get_3DR(self):
         """
@@ -303,6 +303,8 @@ class Simulation:
         self.h = get_hubble_constant(simulation_directory, snapshot_directory, snapshot_value, snapshot_value_kind)
         self.particles = get_particles(simulation_directory, snapshot_directory, species, snapshot_values, snapshot_value_kind)
         self.ahf_data = get_ahf_data(ahf_path)
+        # Get rid of the output
+        clear_console()
 
     def get_halo(self, index = 0):
         """
