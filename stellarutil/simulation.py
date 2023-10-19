@@ -166,7 +166,7 @@ class Star:
         """
         return dist(self.vx, self.vy, self.vz)
     
-    def get_r(self):
+    def get_3DR(self):
         """
         Get the 3d radius of the star from the center of the halo.
         
@@ -175,6 +175,16 @@ class Star:
         The radius (r) of the star.
         """
         return dist(self.x, self.y, self.z)
+    
+    def get_2DR(self):
+        """
+        Get the 2d radius of the star from the center of the halo.
+        
+        Returns
+        -------
+        The radius (r) of the star.
+        """
+        return dist(self.x, self.y)
     
     def __str__(self):
         """

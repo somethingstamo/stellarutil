@@ -178,6 +178,8 @@ def graph(x, y, title = None, x_label = None, y_label = None, windowTitle = "Fig
     fig.canvas.manager.set_window_title(windowTitle)
     # Display the graph
     plt.show()
+    # Return the plot
+    return plt
 
 
 
