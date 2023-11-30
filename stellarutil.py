@@ -1,4 +1,4 @@
-import os, gizmo_analysis as gizmo, astropy.io.ascii as ascii, numpy as __np
+import os as __os, gizmo_analysis as __gizmo, astropy.io.ascii as __ascii, numpy as __np
 
 #region functions to talk to gizmo_analysis
 
@@ -18,7 +18,7 @@ def __get_ahf_data(path, filter = True):
         Return a 2D list of the data specified in the AHF file.
     '''
 
-    data = ascii.read(path)
+    data = __ascii.read(path)
     if not filter:
         return data
     else:
@@ -77,7 +77,7 @@ def __get_field_name(data, name):
     return None
 
 def __get_hubble_constant(simulation_directory, snapshot_directory, snapshot_value, snapshot_value_kind):
-    header = gizmo.io.Read.read_header(
+    header = __gizmo.io.Read.read_header(
         simulation_directory = simulation_directory,
         snapshot_directory = snapshot_directory,
         snapshot_value_kind = snapshot_value_kind,
@@ -86,7 +86,7 @@ def __get_hubble_constant(simulation_directory, snapshot_directory, snapshot_val
     return header['hubble']
 
 def __get_particles(simulation_directory, snapshot_directory, species, snapshot_values, snapshot_value_kind):
-    return gizmo.io.Read.read_snapshots(
+    return __gizmo.io.Read.read_snapshots(
         simulation_directory = simulation_directory,
         snapshot_directory = snapshot_directory,
         species=species, 
@@ -338,10 +338,10 @@ class Simulation:
         if simulation_name is not None:
             simulation_directory = f'../data/{simulation_name}'
             # Look for the file that ends with '.AHF_halos'.
-            items = os.listdir(simulation_directory)
+            items = __os.listdir(simulation_directory)
             for item in items:
-                file_path = os.path.join(simulation_directory, item)
-                if not os.path.isdir(file_path) and item.endswith('.AHF_halos'):
+                file_path = __os.path.join(simulation_directory, item)
+                if not __os.path.isdir(file_path) and item.endswith('.AHF_halos'):
                     print(file_path)
                     ahf_path = file_path
             if ahf_path is None:
@@ -349,10 +349,10 @@ class Simulation:
                 return
         elif simulation_directory is not None and ahf_path is None:
             # Look for the file that ends with '.AHF_halos'.
-            items = os.listdir(simulation_directory)
+            items = __os.listdir(simulation_directory)
             for item in items:
-                file_path = os.path.join(simulation_directory, item)
-                if not os.path.isdir(file_path) and item.endswith('.AHF_halos'):
+                file_path = __os.path.join(simulation_directory, item)
+                if not __os.path.isdir(file_path) and item.endswith('.AHF_halos'):
                     ahf_path = file_path
                     print('Found AHF file here: ' + ahf_path)
                     break
@@ -510,7 +510,7 @@ class Simulation:
                 elif prompt == 'b':
                     print_halo_fields()
                 elif prompt == 'c':
-                    os.system('clear')
+                    __os.system('clear')
                 elif prompt == 'd':
                     print("\tThe simulation file contains information about all particles in the simulation.")
                     print("\tNeed to edit this stuff underneath when structure changes.")
@@ -521,10 +521,10 @@ class Simulation:
                     print("\tStar - position, mass, massfraction, id.child, id.generation, id, form.scalefactor, velocity")  
                     print("\tGas - position, density, electron.fraction, temperature, mass, massfraction, hydrogen.neutral.fraction, id.child, id.generation, id, size, sfr, velocity")  
                 elif prompt == 'l':
-                    os.system('pip3 list')
+                    __os.system('pip3 list')
                 elif prompt == 'm':
                     print_menu()
                 elif prompt == 'p':
-                    os.system("echo $PYTHONPATH | tr ':' '\n'")
+                    __os.system("echo $PYTHONPATH | tr ':' '\n'")
                 else:
                     print("\tYou have not chosen a valid option.")
