@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='stellarutil',
-    version='0.0.91',
+    version='0.0.92',
     author='Cameron Ross',
     author_email='ceross@cpp.edu',
     description= 'A utility package for CPP Fire Squad',
