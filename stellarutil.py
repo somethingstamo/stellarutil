@@ -99,9 +99,47 @@ class Star:
 
 class Halo:
 
-    def __init__(self, simulation, index, stars, xc, yc, zc, vxc, vyc, vzc):
+    def __init__(self, simulation, id, stars, xc, yc, zc, vxc, vyc, vzc, hostID, mass, radius, rMax, vMax, vEsc, numGas, gasMass, numStars, starMass):
+        """
+        Initialize a new Halo object.
+
+        Parameters:
+        ----------
+        simulation : Simulation
+            The simulation the halo comes from.
+        id : integer
+            The id of the halo.
+        stars : Stars list
+            The list of stars in the halo.
+        xc : float
+            The center x position.
+        yc : float
+            The center y position.
+        zc : float
+            The center z position.
+        hostID : integer
+            The id of the parent halo.
+        mass : float
+            The mass of the halo.
+        radius : float
+            The radius of the halo.
+        rMax : float
+            The max radius of the halo.
+        vMax : float
+            The max velocity of the halo.
+        vEsc : float
+            The escape velocity of the halo.
+        numGas : integer
+            The number of gas particles.
+        gasMass : float
+            The mass of gas particles.
+        numStars : integer
+            The number of star particles.
+        gasMass : float
+            The mass of star particles.
+        """
         self.simulation = simulation
-        self.index = index
+        self.id = id
         self.stars = stars
         self.xc = xc
         self.yc = yc
@@ -109,11 +147,21 @@ class Halo:
         self.vxc = vxc
         self.vyc = vyc
         self.vzc = vzc
+        self.hostID = hostID
+        self.mass = mass
+        self.radius = radius
+        self.rMax = rMax
+        self.vMax = vMax
+        self.vEsc = vEsc
+        self.numGas = numGas
+        self.gasMass = gasMass
+        self.numStars = numStars
+        self.starMass = starMass
 
     def restrict_percentage(self, percentage = 15):
         # Get the radius of the galaxy that can actually hold stars
         # Rhalo, Mhalo, Vhalo <-> Rvir, Mvir, Vvir
-        rgal = (percentage / 100.0) * self.simulation.get_field('12')[self.index] / self.simulation.h 
+        rgal = (percentage / 100.0) * self.simulation.get_field('12')[self.id] / self.simulation.h 
         # Get all the stars and center on the given halo
         x = self.simulation.particles['star']['position'][:,0] - self.xc
         y = self.simulation.particles['star']['position'][:,1] - self.yc
@@ -180,11 +228,11 @@ class Halo:
         # Update the halos star list
         self.stars = new_stars
 
-    def center_on(self, otherIndex):
+    def center_on(self, otherID):
         # Get the center relative to the halo at the given index
-        xc = (self.simulation.get_field('Xc(6)')[self.index] / self.simulation.h) - (self.get_field('Xc(6)')[otherIndex] / self.simulation.h)
-        yc = (self.simulation.get_field('Yc(7)')[self.index] / self.simulation.h) - (self.get_field('Yc(7)')[otherIndex] / self.simulation.h)
-        zc = (self.simulation.get_field('Zc(8)')[self.index] / self.simulation.h) - (self.get_field('Zc(8)')[otherIndex] / self.simulation.h)
+        xc = (self.simulation.get_field('Xc(6)')[self.id] / self.simulation.h) - (self.get_field('Xc(6)')[otherID] / self.simulation.h)
+        yc = (self.simulation.get_field('Yc(7)')[self.id] / self.simulation.h) - (self.get_field('Yc(7)')[otherID] / self.simulation.h)
+        zc = (self.simulation.get_field('Zc(8)')[self.id] / self.simulation.h) - (self.get_field('Zc(8)')[otherID] / self.simulation.h)
         # Recenter each star in the list
         for star in self.stars:
             star.x -= xc
@@ -298,29 +346,27 @@ class Simulation:
         # Filter the AHF data
         self.ahf_data = self.ahf_data[(self.ahf_data.field('fMhires(38)') > 0.99)]
     
-    def get_halo(self, index = 0):
+    def get_halo(self, id = 0):
         """
-        Get the list of stars inside an indicated dark matter halo.
+        Get the indicated dark matter halo.
 
         Parameters:
         ----------
-        index : int
+        id : int
             The index of the dark matter halo. Default is 0.
-        restrict : float
-            The restriction percentage. Default is 0.15 (15%).
         
         Returns
         -------
-        The list of all stars in the indicated dark matter halo.
+        The indicated dark matter halo in a Halo object.
         """
         # Get the center of the indicated dark matter halo
-        xc = self.ahf_data.field('Xc(6)')[index] / self.h
-        yc = self.ahf_data.field('Yc(7)')[index] / self.h
-        zc = self.ahf_data.field('Zc(8)')[index] / self.h
+        xc = self.ahf_data.field('Xc(6)')[id] / self.h
+        yc = self.ahf_data.field('Yc(7)')[id] / self.h
+        zc = self.ahf_data.field('Zc(8)')[id] / self.h
         # Get the peculiar velocity of the indicated dark matter halo
-        vxc = self.ahf_data.field('VXc(9)')[index] / self.h
-        vyc = self.ahf_data.field('VYc(10)')[index] / self.h
-        vzc = self.ahf_data.field('VZc(11)')[index] / self.h
+        vxc = self.ahf_data.field('VXc(9)')[id] / self.h
+        vyc = self.ahf_data.field('VYc(10)')[id] / self.h
+        vzc = self.ahf_data.field('VZc(11)')[id] / self.h
         # Get the x,y,z positions of each star particle in the simulation
         # And normalize it with the center of the indicated dark matter halo
         x = self.particles['star']['position'][:,0] - xc
@@ -339,7 +385,7 @@ class Simulation:
         distances = np.sqrt(np.square(x) + np.square(y) + np.square(z))
         # Get the radius of the galaxy that can actually hold stars
         # Rhalo, Mhalo, Vhalo <-> Rvir, Mvir, Vvir
-        rgal = self.get_field('12')[index] / self.h 
+        rgal = self.get_field('12')[id] / self.h 
         # Filter out all stars that are too far away 
         x_gal = x[distances < rgal]
         y_gal = y[distances < rgal]
@@ -355,8 +401,18 @@ class Simulation:
         for i in range(len(x_gal)):
             star = Star(x_gal[i], y_gal[i], z_gal[i], m_gal[i], a_gal[i], vx_gal[i], vy_gal[i], vz_gal[i])
             stars.append(star)
+        # Grab some more metadata for the halo
+        hostID = self.ahf_data.field('hostHalo(2)')[id]
+        mass = self.ahf_data.field('Mvir(4)')[id] / self.h
+        rMax = self.ahf_data.field('Rmax(13)')[id] / self.h
+        vMax = self.ahf_data.field('Vmax(17)')[id]
+        vEsc = self.ahf_data.field('v_esc(18)')[id]
+        numGas = self.ahf_data.field('n_gas(44)')[id]
+        gasMass = self.ahf_data.field('M_gas(45)')[id]
+        numStars = self.ahf_data.field('n_star(64))')[id]
+        starMass = self.ahf_data.field('M_star(65)')[id]
         # Return the indicated dark matter halo
-        halo = Halo(self, index, stars, xc, yc, zc, vxc, vyc, vzc)
+        halo = Halo(self, id, stars, xc, yc, zc, vxc, vyc, vzc, hostID, mass, rgal, rMax, vMax, vEsc, numGas, gasMass, numStars, starMass)
         return halo
 
     def get_field(self, field):
