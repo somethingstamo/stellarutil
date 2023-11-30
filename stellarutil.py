@@ -1,4 +1,4 @@
-import os, gizmo_analysis as gizmo, astropy.io.ascii as ascii, numpy as np, sys
+import os, gizmo_analysis as gizmo, astropy.io.ascii as ascii, numpy as __np
 
 #region functions to talk to gizmo_analysis
 
@@ -161,7 +161,7 @@ class Star:
         -------
         The velocity of the star.
         """
-        return np.sqrt(np.square(self.vx) + np.square(self.vy)+ np.square(self.vz))
+        return __np.sqrt(__np.square(self.vx) + __np.square(self.vy)+ __np.square(self.vz))
     
     def get_3DR(self):
         """
@@ -171,7 +171,7 @@ class Star:
         -------
         The radius (r) of the star.
         """
-        return np.sqrt(np.square(self.x) + np.square(self.y)+ np.square(self.z))
+        return __np.sqrt(__np.square(self.x) + __np.square(self.y)+ __np.square(self.z))
 
     def get_2DR(self):
         """
@@ -181,7 +181,7 @@ class Star:
         -------
         The radius (r) of the star.
         """
-        return np.sqrt(np.square(self.x) + np.square(self.y))
+        return __np.sqrt(__np.square(self.x) + __np.square(self.y))
     
     def __str__(self):
         """
@@ -221,7 +221,7 @@ class Halo:
         vy = self.simulation.particles['star']['velocity'][:,1] - self.vyc
         vz = self.simulation.particles['star']['velocity'][:,2] - self.vzc
         # Get the distance of each star from the center of the indicated dark matter halo
-        distances =  np.sqrt(np.square(x) + np.square(y) + np.square(z))
+        distances =  __np.sqrt(__np.square(x) + __np.square(y) + __np.square(z))
         # Filter out all stars that are too far away 
         x_gal = x[distances < rgal]
         y_gal = y[distances < rgal]
@@ -373,7 +373,7 @@ class Simulation:
                     print('Missing ahf_path.') 
                 return
             
-        # Snpashot value is used to get the hubble constant, it will always be a subset of the snapshot_values
+        # S__npashot value is used to get the hubble constant, it will always be a subset of the snapshot_values
         snapshot_value = snapshot_values[0] if type(snapshot_values) is list else snapshot_values
         # Get the data from gizmo_analysis
         self.h = __get_hubble_constant(simulation_directory, snapshot_directory, snapshot_value, snapshot_value_kind)
@@ -418,7 +418,7 @@ class Simulation:
         vy = self.particles['star']['velocity'][:,1] - vyc
         vz = self.particles['star']['velocity'][:,2] - vzc
         # Get the distance of each star from the center of the indicated dark matter halo
-        distances = np.sqrt(np.square(x) + np.square(y) + np.square(z))
+        distances = __np.sqrt(__np.square(x) + __np.square(y) + __np.square(z))
         # Get the radius of the galaxy that can actually hold stars
         # Rhalo, Mhalo, Vhalo <-> Rvir, Mvir, Vvir
         rgal = self.get_field('12')[index] / self.h 
