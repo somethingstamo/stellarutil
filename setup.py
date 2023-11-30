@@ -1,13 +1,13 @@
 from setuptools import setup, find_packages
-
+import foo
 
 setup(
     name='stellarutil',
-    version='0.0.87',
+    version='0.0.88',
     author='Cameron Ross',
     author_email='ceross@cpp.edu',
     description= 'A utility package for CPP Fire Squad',
-    packages=find_packages(),
+    packages=foo,
     license='MIT',
     url='https://github.com/CPP-FIRE-Squad/stellarutil',
     # py_modules=['console', 'graph', 'simulation', 'calculations'],
