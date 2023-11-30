@@ -28,8 +28,8 @@ Initialize a new Halo object.
 ### Parameters:
 
 
-| Name | Type | Description | Default |
-| --- | --- | --- | --- |
+| Name | Type | Description |
+| --- | --- | --- |
 | simulation | Simulation |     The simulation the halo comes from. | required |
 | id | integer |     The id of the halo. | required |
 | stars | Stars list |     The list of stars in the halo. | required |
@@ -60,8 +60,8 @@ Get the values in the column of the specified field from the .AHF_halos file.
 ### Parameters:
 
 
-| Name | Type | Description | Default |
-| --- | --- | --- | --- |
+| Name | Type | Description |
+| --- | --- | --- |
 | field | string |     The name of the field. | required |
 ---
 ## get_halo
@@ -73,8 +73,8 @@ Get the indicated dark matter halo.
 ### Parameters:
 
 
-| Name | Type | Description | Default |
-| --- | --- | --- | --- |
+| Name | Type | Description |
+| --- | --- | --- |
 | id | int |     The index of the dark matter halo. Default is 0. | required |
 ---
 ## help
@@ -92,8 +92,8 @@ Initialize a new Simulation object.
 ### Parameters:
 
 
-| Name | Type | Description | Default |
-| --- | --- | --- | --- |
+| Name | Type | Description |
+| --- | --- | --- |
 | simulation_name | string |     The name of the simulation. <br />    By giving the name, it will look for simulation_directory/snapshot_directory/ahf_directory in '../data/{simulation_name}' | required |
 | simulation_directory | string |     The path to the .hdf5 file.  | required |
 | snapshot_directory | string |     The path to the snapshot_times.txt.  | required |
@@ -132,8 +132,8 @@ Initialize a new Star object.
 ### Parameters:
 
 
-| Name | Type | Description | Default |
-| --- | --- | --- | --- |
+| Name | Type | Description |
+| --- | --- | --- |
 | x | float |     The x position of the star. | required |
 | y | float |     The y position of the star. | required |
 | z | float |     The z position of the star. | required |
