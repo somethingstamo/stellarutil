@@ -230,9 +230,9 @@ class Halo:
 
     def center_on(self, otherID):
         # Get the center relative to the halo at the given index
-        xc = (self.simulation.get_field('Xc(6)')[self.id] / self.simulation.h) - (self.get_field('Xc(6)')[otherID] / self.simulation.h)
-        yc = (self.simulation.get_field('Yc(7)')[self.id] / self.simulation.h) - (self.get_field('Yc(7)')[otherID] / self.simulation.h)
-        zc = (self.simulation.get_field('Zc(8)')[self.id] / self.simulation.h) - (self.get_field('Zc(8)')[otherID] / self.simulation.h)
+        xc = (self.simulation.get_field('Xc(6)')[self.id] / self.simulation.h) - (self.simulation.get_field('Xc(6)')[otherID] / self.simulation.h)
+        yc = (self.simulation.get_field('Yc(7)')[self.id] / self.simulation.h) - (self.simulation.get_field('Yc(7)')[otherID] / self.simulation.h)
+        zc = (self.simulation.get_field('Zc(8)')[self.id] / self.simulation.h) - (self.simulation.get_field('Zc(8)')[otherID] / self.simulation.h)
         # Recenter each star in the list
         for star in self.stars:
             star.x -= xc
