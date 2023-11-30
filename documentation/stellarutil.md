@@ -16,9 +16,9 @@
     - [get_3DR](#get_3dr): Get the 3d radius of the star from the center of the halo.
     - [get_velocity](#get_velocity): Get the velocity of the star by calculating the magnitude of the velocity vector.
     - [init Star](#init-star): Initialize a new Star object.
-
+---
 ## center_on
-
+---
 ## init Halo
 
 ### Description:
@@ -46,11 +46,11 @@ Initialize a new Halo object.
 | gasMass | float |     The mass of gas particles. | required |
 | numStars | integer |     The number of star particles. | required |
 | gasMass | float |     The mass of gas particles. | required |
-
+---
 ## restrict_percentage
-
+---
 ## restrict_slice
-
+---
 ## get_field
 
 ### Description:
@@ -63,7 +63,7 @@ Get the values in the column of the specified field from the .AHF_halos file.
 | Name | Type | Description | Default |
 | --- | --- | --- | --- |
 | field | string |     The name of the field. | required |
-
+---
 ## get_halo
 
 ### Description:
@@ -76,13 +76,13 @@ Get the indicated dark matter halo.
 | Name | Type | Description | Default |
 | --- | --- | --- | --- |
 | id | int |     The index of the dark matter halo. Default is 0. | required |
-
+---
 ## help
 
 ### Description:
 Recieve help.
 
-
+---
 ## init Simulation
 
 ### Description:
@@ -100,29 +100,29 @@ Initialize a new Simulation object.
 | ahf_path | string |     The path to the .AHF_halos file. | required |
 | species | list |     name[s] of particle species:<br />        'all' = all species in file<br />        'dark' = dark matter at highest resolution<br />        'dark2' = dark matter at lower resolution<br />        'gas' = gas<br />        'star' = stars<br />        'blackhole' = black holes, if snapshot contains them | required |
 | snapshot_values | int or float or list |     index[s] or redshift[s] or scale-factor[s] of snapshot[s] | required |
-
+---
 ## print_halo_fields
-
+---
 ## print_menu
-
+---
 ## get_2DR
 
 ### Description:
 Get the 2d radius of the star from the center of the halo.
 
-
+---
 ## get_3DR
 
 ### Description:
 Get the 3d radius of the star from the center of the halo.
 
-
+---
 ## get_velocity
 
 ### Description:
 Get the velocity of the star by calculating the magnitude of the velocity vector.
 
-
+---
 ## init Star
 
 ### Description:
