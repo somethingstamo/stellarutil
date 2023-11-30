@@ -2,17 +2,17 @@ from setuptools import setup, find_packages
 
 setup(
     name='stellarutil',
-    version='0.0.75',
+    version='0.0.77',
     author='Cameron Ross',
     author_email='ceross@cpp.edu',
     description= 'A utility package for CPP Fire Squad',
     packages=find_packages(),
     license='MIT',
     url='https://github.com/CPP-FIRE-Squad/stellarutil',
-    py_modules=['console', 'graph', 'simulation', 'calculations'],
+    # py_modules=['console', 'graph', 'simulation', 'calculations'],
     entry_points={
         'console_scripts': [
-            'stellarutil = stellarutil.console:command_line_interact',
+            'stellarutil = stellarutil:command_line_interact',
         ],
     },   
 )
