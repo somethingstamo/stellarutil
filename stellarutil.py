@@ -1,4 +1,4 @@
-import os as __os, gizmo_analysis as __gizmo, astropy.io.ascii as __ascii, numpy as __np
+import os as system, gizmo_analysis as __gizmo, astropy.io.ascii as __ascii, numpy as __np
 
 #region functions to talk to gizmo_analysis
 
@@ -338,10 +338,10 @@ class Simulation:
         if simulation_name is not None:
             simulation_directory = f'../data/{simulation_name}'
             # Look for the file that ends with '.AHF_halos'.
-            items = __os.listdir(simulation_directory)
+            items = system.listdir(simulation_directory)
             for item in items:
-                file_path = __os.path.join(simulation_directory, item)
-                if not __os.path.isdir(file_path) and item.endswith('.AHF_halos'):
+                file_path = system.path.join(simulation_directory, item)
+                if not system.path.isdir(file_path) and item.endswith('.AHF_halos'):
                     print(file_path)
                     ahf_path = file_path
             if ahf_path is None:
@@ -349,10 +349,10 @@ class Simulation:
                 return
         elif simulation_directory is not None and ahf_path is None:
             # Look for the file that ends with '.AHF_halos'.
-            items = __os.listdir(simulation_directory)
+            items = system.listdir(simulation_directory)
             for item in items:
-                file_path = __os.path.join(simulation_directory, item)
-                if not __os.path.isdir(file_path) and item.endswith('.AHF_halos'):
+                file_path = system.path.join(simulation_directory, item)
+                if not system.path.isdir(file_path) and item.endswith('.AHF_halos'):
                     ahf_path = file_path
                     print('Found AHF file here: ' + ahf_path)
                     break
@@ -510,7 +510,7 @@ class Simulation:
                 elif prompt == 'b':
                     print_halo_fields()
                 elif prompt == 'c':
-                    __os.system('clear')
+                    system.system('clear')
                 elif prompt == 'd':
                     print("\tThe simulation file contains information about all particles in the simulation.")
                     print("\tNeed to edit this stuff underneath when structure changes.")
@@ -521,10 +521,10 @@ class Simulation:
                     print("\tStar - position, mass, massfraction, id.child, id.generation, id, form.scalefactor, velocity")  
                     print("\tGas - position, density, electron.fraction, temperature, mass, massfraction, hydrogen.neutral.fraction, id.child, id.generation, id, size, sfr, velocity")  
                 elif prompt == 'l':
-                    __os.system('pip3 list')
+                    system.system('pip3 list')
                 elif prompt == 'm':
                     print_menu()
                 elif prompt == 'p':
-                    __os.system("echo $PYTHONPATH | tr ':' '\n'")
+                    system.system("echo $PYTHONPATH | tr ':' '\n'")
                 else:
                     print("\tYou have not chosen a valid option.")
