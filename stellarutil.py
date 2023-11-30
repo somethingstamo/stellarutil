@@ -409,7 +409,7 @@ class Simulation:
         vEsc = self.ahf_data.field('v_esc(18)')[id]
         numGas = self.ahf_data.field('n_gas(44)')[id]
         gasMass = self.ahf_data.field('M_gas(45)')[id]
-        numStars = self.ahf_data.field('n_star(64))')[id]
+        numStars = self.ahf_data.field('n_star(64)')[id]
         starMass = self.ahf_data.field('M_star(65)')[id]
         # Return the indicated dark matter halo
         halo = Halo(self, id, stars, xc, yc, zc, vxc, vyc, vzc, hostID, mass, rgal, rMax, vMax, vEsc, numGas, gasMass, numStars, starMass)
