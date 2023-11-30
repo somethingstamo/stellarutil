@@ -3,7 +3,7 @@ import stellarutil
 
 setup(
     name='stellarutil',
-    version='0.0.80',
+    version='0.0.81',
     author='Cameron Ross',
     author_email='ceross@cpp.edu',
     description= 'A utility package for CPP Fire Squad',
