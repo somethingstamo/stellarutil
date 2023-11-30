@@ -1,4 +1,4 @@
-import os as system, gizmo_analysis as __gizmo, astropy.io.ascii as __ascii, numpy as __np
+import os as __theOS, gizmo_analysis as __gizmo, astropy.io.ascii as __ascii, numpy as __np
 
 #region functions to talk to gizmo_analysis
 
@@ -338,10 +338,10 @@ class Simulation:
         if simulation_name is not None:
             simulation_directory = f'../data/{simulation_name}'
             # Look for the file that ends with '.AHF_halos'.
-            items = system.listdir(simulation_directory)
+            items = __theOS.listdir(simulation_directory)
             for item in items:
-                file_path = system.path.join(simulation_directory, item)
-                if not system.path.isdir(file_path) and item.endswith('.AHF_halos'):
+                file_path = __theOS.path.join(simulation_directory, item)
+                if not __theOS.path.isdir(file_path) and item.endswith('.AHF_halos'):
                     print(file_path)
                     ahf_path = file_path
             if ahf_path is None:
@@ -349,10 +349,10 @@ class Simulation:
                 return
         elif simulation_directory is not None and ahf_path is None:
             # Look for the file that ends with '.AHF_halos'.
-            items = system.listdir(simulation_directory)
+            items = __theOS.listdir(simulation_directory)
             for item in items:
-                file_path = system.path.join(simulation_directory, item)
-                if not system.path.isdir(file_path) and item.endswith('.AHF_halos'):
+                file_path = __theOS.path.join(simulation_directory, item)
+                if not __theOS.path.isdir(file_path) and item.endswith('.AHF_halos'):
                     ahf_path = file_path
                     print('Found AHF file here: ' + ahf_path)
                     break
@@ -375,10 +375,25 @@ class Simulation:
             
         # S__npashot value is used to get the hubble constant, it will always be a subset of the snapshot_values
         snapshot_value = snapshot_values[0] if type(snapshot_values) is list else snapshot_values
-        # Get the data from gizmo_analysis
-        self.h = __get_hubble_constant(simulation_directory, snapshot_directory, snapshot_value, snapshot_value_kind)
-        self.particles = __get_particles(simulation_directory, snapshot_directory, species, snapshot_values, snapshot_value_kind)
-        self.ahf_data = __get_ahf_data(ahf_path)
+        # Get the hubble constant from gizmo_analysis
+        self.h = __gizmo.io.Read.read_header(
+            simulation_directory = simulation_directory,
+            snapshot_directory = snapshot_directory,
+            snapshot_value_kind = snapshot_value_kind,
+            snapshot_value = snapshot_value
+        )['hubble']
+        # Get the particles from gizmo_analysis
+        self.particles = __gizmo.io.Read.read_snapshots(
+            simulation_directory = simulation_directory,
+            snapshot_directory = snapshot_directory,
+            species=species, 
+            snapshot_value_kind=snapshot_value_kind,
+            snapshot_values=snapshot_values
+        )
+        # Get the AHF data from the halo file
+        self.ahf_data = __ascii.read(ahf_path)
+        # Filter the AHF data
+        self.ahf_data = self.ahf_data[(self.ahf_data.field('fMhires(38)') > 0.99)]
     
     def get_halo(self, index = 0):
         """
@@ -454,8 +469,18 @@ class Simulation:
         -------
         The list of values in that field.
         """
+        
         # Get the correct name of the field
-        field_name = __get_field_name(self.ahf_data, field)
+        field_name = str(field).lower()  # Convert field to string if it's an integer
+        field_name = field_name.replace('_','')
+        # Loop through all the field names
+        for item in self.ahf_data.dtype.names:
+            string = item.lower().replace('_','')
+            if field_name in string:
+                field_name = item
+                break 
+            
+        # field_name = __get_field_name(self.ahf_data, field)
         # Store all the field data in a list called column
         column = self.ahf_data.field(field_name) 
         # Return the column
@@ -510,7 +535,7 @@ class Simulation:
                 elif prompt == 'b':
                     print_halo_fields()
                 elif prompt == 'c':
-                    system.system('clear')
+                    __theOS.system('clear')
                 elif prompt == 'd':
                     print("\tThe simulation file contains information about all particles in the simulation.")
                     print("\tNeed to edit this stuff underneath when structure changes.")
@@ -521,10 +546,10 @@ class Simulation:
                     print("\tStar - position, mass, massfraction, id.child, id.generation, id, form.scalefactor, velocity")  
                     print("\tGas - position, density, electron.fraction, temperature, mass, massfraction, hydrogen.neutral.fraction, id.child, id.generation, id, size, sfr, velocity")  
                 elif prompt == 'l':
-                    system.system('pip3 list')
+                    __theOS.system('pip3 list')
                 elif prompt == 'm':
                     print_menu()
                 elif prompt == 'p':
-                    system.system("echo $PYTHONPATH | tr ':' '\n'")
+                    __theOS.system("echo $PYTHONPATH | tr ':' '\n'")
                 else:
                     print("\tYou have not chosen a valid option.")
