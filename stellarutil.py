@@ -1,101 +1,4 @@
-import os, gizmo_analysis as __gizmo, astropy.io.ascii as __ascii, numpy as __np
-
-#region functions to talk to gizmo_analysis
-
-def __get_ahf_data(path, filter = True):
-    '''
-    Read the content from the AHF file.
-    
-    Parameters:
-    ----------
-        path : str 
-            the path to the file
-        filter : boolean
-            should the data be filtered to only include rows with: fMhires(38) > 0.99. Default is true.
-
-    Returns
-    -------
-        Return a 2D list of the data specified in the AHF file.
-    '''
-
-    data = __ascii.read(path)
-    if not filter:
-        return data
-    else:
-        data_filtered = data[(data.field('fMhires(38)') > 0.99)]
-        return data_filtered
-
-def __get_field(data, field):
-    '''
-    Return a list of all items in the field of a dataset
-
-    Parameters:
-    ----------
-        data : 2d array
-            The table of data 
-        field : int | string 
-            The name of the field.
-        elem_range : range
-            Range of indices to print (default is all).
-
-    Returns
-    -------
-        The ist of all items in the field.
-    '''
-    
-    # Get the correct name of the field
-    field_name = __get_field_name(data, field)
-    print(f"{field} changed to {field_name}")
-    # Store all the field data in a list called column
-    column = data.field(field_name) 
-    # Return the column
-    return column
-
-def __get_field_name(data, name):
-    '''
-    Return the correct name of a field.
-
-    Parameters:
-    ----------
-        data : 2d array
-            The table of data 
-        name : int | string 
-            The name of the field.
-
-    Returns
-    -------
-        The ist of all items in the field.
-    '''
-    name = str(name).lower()  # Convert field to string if it's an integer
-    name = name.replace('_','')
-    # Loop through all the field names
-    for item in data.dtype.names:
-        string = item.lower().replace('_','')
-        if name in string:
-            return item
-            
-    return None
-
-def __get_hubble_constant(simulation_directory, snapshot_directory, snapshot_value, snapshot_value_kind):
-    header = __gizmo.io.Read.read_header(
-        simulation_directory = simulation_directory,
-        snapshot_directory = snapshot_directory,
-        snapshot_value_kind = snapshot_value_kind,
-        snapshot_value = snapshot_value
-    )
-    return header['hubble']
-
-def __get_particles(simulation_directory, snapshot_directory, species, snapshot_values, snapshot_value_kind):
-    return __gizmo.io.Read.read_snapshots(
-        simulation_directory = simulation_directory,
-        snapshot_directory = snapshot_directory,
-        species=species, 
-        snapshot_value_kind=snapshot_value_kind,
-        snapshot_values=snapshot_values
-    )
-
-#endregion
-
+import os, gizmo_analysis as gizmo, astropy.io.ascii as ascii, numpy as np
 
 class Star:
 
@@ -161,7 +64,7 @@ class Star:
         -------
         The velocity of the star.
         """
-        return __np.sqrt(__np.square(self.vx) + __np.square(self.vy)+ __np.square(self.vz))
+        return np.sqrt(np.square(self.vx) + np.square(self.vy)+ np.square(self.vz))
     
     def get_3DR(self):
         """
@@ -171,7 +74,7 @@ class Star:
         -------
         The radius (r) of the star.
         """
-        return __np.sqrt(__np.square(self.x) + __np.square(self.y)+ __np.square(self.z))
+        return np.sqrt(np.square(self.x) + np.square(self.y)+ np.square(self.z))
 
     def get_2DR(self):
         """
@@ -181,7 +84,7 @@ class Star:
         -------
         The radius (r) of the star.
         """
-        return __np.sqrt(__np.square(self.x) + __np.square(self.y))
+        return np.sqrt(np.square(self.x) + np.square(self.y))
     
     def __str__(self):
         """
@@ -221,7 +124,7 @@ class Halo:
         vy = self.simulation.particles['star']['velocity'][:,1] - self.vyc
         vz = self.simulation.particles['star']['velocity'][:,2] - self.vzc
         # Get the distance of each star from the center of the indicated dark matter halo
-        distances =  __np.sqrt(__np.square(x) + __np.square(y) + __np.square(z))
+        distances =  np.sqrt(np.square(x) + np.square(y) + np.square(z))
         # Filter out all stars that are too far away 
         x_gal = x[distances < rgal]
         y_gal = y[distances < rgal]
@@ -373,17 +276,17 @@ class Simulation:
                     print('Missing ahf_path.') 
                 return
             
-        # S__npashot value is used to get the hubble constant, it will always be a subset of the snapshot_values
+        # Snpashot value is used to get the hubble constant, it will always be a subset of the snapshot_values
         snapshot_value = snapshot_values[0] if type(snapshot_values) is list else snapshot_values
         # Get the hubble constant from gizmo_analysis
-        self.h = __gizmo.io.Read.read_header(
+        self.h = gizmo.io.Read.read_header(
             simulation_directory = simulation_directory,
             snapshot_directory = snapshot_directory,
             snapshot_value_kind = snapshot_value_kind,
             snapshot_value = snapshot_value
         )['hubble']
         # Get the particles from gizmo_analysis
-        self.particles = __gizmo.io.Read.read_snapshots(
+        self.particles = gizmo.io.Read.read_snapshots(
             simulation_directory = simulation_directory,
             snapshot_directory = snapshot_directory,
             species=species, 
@@ -391,7 +294,7 @@ class Simulation:
             snapshot_values=snapshot_values
         )
         # Get the AHF data from the halo file
-        self.ahf_data = __ascii.read(ahf_path)
+        self.ahf_data = ascii.read(ahf_path)
         # Filter the AHF data
         self.ahf_data = self.ahf_data[(self.ahf_data.field('fMhires(38)') > 0.99)]
     
@@ -433,7 +336,7 @@ class Simulation:
         vy = self.particles['star']['velocity'][:,1] - vyc
         vz = self.particles['star']['velocity'][:,2] - vzc
         # Get the distance of each star from the center of the indicated dark matter halo
-        distances = __np.sqrt(__np.square(x) + __np.square(y) + __np.square(z))
+        distances = np.sqrt(np.square(x) + np.square(y) + np.square(z))
         # Get the radius of the galaxy that can actually hold stars
         # Rhalo, Mhalo, Vhalo <-> Rvir, Mvir, Vvir
         rgal = self.get_field('12')[index] / self.h 
