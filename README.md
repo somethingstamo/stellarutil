@@ -34,6 +34,9 @@ m10v_res250 = Simulation(
     ahf_path='../data/m10v_res250md/snapshot_600.z0.000.AHF_halos',
 )
 
+# Getting help
+m10v_res250.help()
+
 # Print hubble constant
 print(m10v_res250.h)
 # Print particle fields
