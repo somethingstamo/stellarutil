@@ -1,10 +1,8 @@
-from setuptools import setup, find_packages
-
-
+from setuptools import setup
 
 setup(
     name='stellarutil',
-    version='0.0.98',
+    version='0.0.99',
     author='Cameron Ross',
     author_email='ceross@cpp.edu',
     description= 'A utility package for CPP Fire Squad',
