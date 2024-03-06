@@ -336,7 +336,7 @@ class Simulation:
             snapshot_value = snapshot_value
         )['hubble']
         # Initialize fields that require division by h (Hubble constant)
-        self.h_fields = ['Xc(6)', 'yc(7)', 'zc(8)'
+        self.h_fields = ['xc(6)', 'yc(7)', 'zc(8)'
                          'vxc(9)', 'vyc(10)', 'vzc(11)'
                          '12', 'mvir(4)', 'rmax(13)']
         # Get the particles from gizmo_analysis
