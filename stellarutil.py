@@ -280,6 +280,8 @@ class Simulation:
         -----------
         h : float
             The hubble constant.
+        h_fields : list
+            List containing the fields that require division by h (Hubble constant)
         particles : float
             The data for all the indicated particles in the simulation.
         ahf_data : float
@@ -333,6 +335,10 @@ class Simulation:
             snapshot_value_kind = snapshot_value_kind,
             snapshot_value = snapshot_value
         )['hubble']
+        # Initialize fields that require division by h (Hubble constant)
+        self.h_fields = ['Xc(6)', 'yc(7)', 'zc(8)'
+                         'vxc(9)', 'vyc(10)', 'vzc(11)'
+                         '12', 'mvir(4)', 'rmax(13)']
         # Get the particles from gizmo_analysis
         self.particles = gizmo.io.Read.read_snapshots(
             simulation_directory = simulation_directory,
@@ -415,7 +421,7 @@ class Simulation:
         halo = Halo(self, id, stars, xc, yc, zc, vxc, vyc, vzc, hostID, mass, rgal, rMax, vMax, vEsc, numGas, gasMass, numStars, starMass)
         return halo
 
-    def get_field(self, field):
+    def get_field(self, field, divide_h = True):
         """
         Get the values in the column of the specified field from the .AHF_halos file.
 
@@ -423,6 +429,10 @@ class Simulation:
         ----------
         field : string
             The name of the field.
+
+        divide_h : Boolean
+            If you would like to divide by h (Hubble Constant).
+            Automatically set to True.
         
         Returns
         -------
@@ -439,11 +449,21 @@ class Simulation:
                 field_name = item
                 break 
             
-        # field_name = __get_field_name(self.ahf_data, field)
-        # Store all the field data in a list called column
-        column = self.ahf_data.field(field_name) 
-        # Return the column
-        return column
+        if divide_h == True:
+            h_query = str(field).lower() # Convert field to string if it's an integer
+            for h_field in self.h_fields:
+                string = h_field.lower().replace('_','')
+                if h_query in string:
+                    # Desired field is one where we must divide by h before returning
+                    # Perform division by h
+                    column = self.ahf_data.field(field_name) / self.h
+                    return column
+        else: 
+            # field_name = __get_field_name(self.ahf_data, field)
+            # Store all the field data in a list called column
+            column = self.ahf_data.field(field_name) 
+            # Return the column
+            return column
     
     def help(self):
         '''
