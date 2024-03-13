@@ -409,7 +409,7 @@ class Simulation:
             stars.append(star)
         # Grab some more metadata for the halo
         hostID = self.ahf_data.field('hostHalo(2)')[id]
-        mass = self.ahf_data.field('Mvir(4)')[id] / self.h
+        mass = self.get_field('4')[id] / self.h
         rMax = self.ahf_data.field('Rmax(13)')[id] / self.h
         vMax = self.ahf_data.field('Vmax(17)')[id]
         vEsc = self.ahf_data.field('v_esc(18)')[id]
