@@ -161,7 +161,7 @@ class Halo:
     def restrict_percentage(self, percentage = 15):
         # Get the radius of the galaxy that can actually hold stars
         # Rhalo, Mhalo, Vhalo <-> Rvir, Mvir, Vvir
-        rgal = (percentage / 100.0) * self.simulation.get_field('12')[self.id] / self.simulation.h 
+        rgal = (percentage / 100.0) * self.simulation.get_field('12')[self.id]
         # Get all the stars and center on the given halo
         x = self.simulation.particles['star']['position'][:,0] - self.xc
         y = self.simulation.particles['star']['position'][:,1] - self.yc
@@ -230,9 +230,9 @@ class Halo:
 
     def center_on(self, otherID):
         # Get the center relative to the halo at the given index
-        xc = (self.simulation.get_field('Xc(6)')[self.id] / self.simulation.h) - (self.simulation.get_field('Xc(6)')[otherID] / self.simulation.h)
-        yc = (self.simulation.get_field('Yc(7)')[self.id] / self.simulation.h) - (self.simulation.get_field('Yc(7)')[otherID] / self.simulation.h)
-        zc = (self.simulation.get_field('Zc(8)')[self.id] / self.simulation.h) - (self.simulation.get_field('Zc(8)')[otherID] / self.simulation.h)
+        xc = (self.simulation.get_field('Xc(6)')[self.id]) - (self.simulation.get_field('Xc(6)')[otherID])
+        yc = (self.simulation.get_field('Yc(7)')[self.id]) - (self.simulation.get_field('Yc(7)')[otherID])
+        zc = (self.simulation.get_field('Zc(8)')[self.id]) - (self.simulation.get_field('Zc(8)')[otherID])
         # Recenter each star in the list
         for star in self.stars:
             star.x -= xc
@@ -336,9 +336,7 @@ class Simulation:
             snapshot_value = snapshot_value
         )['hubble']
         # Initialize fields that require division by h (Hubble constant)
-        self.h_fields = ['xc(6)', 'yc(7)', 'zc(8)'
-                         'vxc(9)', 'vyc(10)', 'vzc(11)'
-                         '12', 'mvir(4)', 'rmax(13)']
+        self.h_fields = ['xc(6)', 'yc(7)', 'zc(8)', '12', '4', 'rmax(13)', 'mstar(65)', 'ngas(45)']
         # Get the particles from gizmo_analysis
         self.particles = gizmo.io.Read.read_snapshots(
             simulation_directory = simulation_directory,
@@ -391,7 +389,7 @@ class Simulation:
         distances = np.sqrt(np.square(x) + np.square(y) + np.square(z))
         # Get the radius of the galaxy that can actually hold stars
         # Rhalo, Mhalo, Vhalo <-> Rvir, Mvir, Vvir
-        rgal = self.get_field('12')[id] / self.h 
+        rgal = self.get_field('12')[id]
         # Filter out all stars that are too far away 
         x_gal = x[distances < rgal]
         y_gal = y[distances < rgal]
@@ -409,7 +407,7 @@ class Simulation:
             stars.append(star)
         # Grab some more metadata for the halo
         hostID = self.ahf_data.field('hostHalo(2)')[id]
-        mass = self.get_field('4')[id] / self.h
+        mass = self.get_field('4')[id]
         rMax = self.ahf_data.field('Rmax(13)')[id] / self.h
         vMax = self.ahf_data.field('Vmax(17)')[id]
         vEsc = self.ahf_data.field('v_esc(18)')[id]
