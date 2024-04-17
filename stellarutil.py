@@ -446,9 +446,9 @@ class Simulation:
             if field_name in string:
                 field_name = item
                 break 
-            
+
         if divide_h == True:
-            h_query = str(field).lower() # Convert field to string if it's an integer
+            h_query = str(field).lower() # Convert field to string if its an integer
             for h_field in self.h_fields:
                 string = h_field.lower().replace('_','')
                 if h_query in string:
@@ -456,8 +456,11 @@ class Simulation:
                     # Perform division by h
                     column = self.ahf_data.field(field_name) / self.h
                     return column
+                
+            # True was passed but the field is one where we do not divide by h
+            column = self.ahf_data.field(field_name)
+            return column
         else: 
-            # field_name = __get_field_name(self.ahf_data, field)
             # Store all the field data in a list called column
             column = self.ahf_data.field(field_name) 
             # Return the column

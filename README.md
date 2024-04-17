@@ -15,8 +15,8 @@ pip3 install git+https://github.com/CPP-FIRE-Squad/stellarutil.git --user
 ```
 
 ## Documentation
- - [Here](./documentation/stellarutil.md) is the documentation for stellarutil.
- - [Here](./documentation/gizmo_analysis/) is the documentation for gizmo_analysis.
+[Here](./documentation/stellarutil.md) is the documentation for stellarutil.
+
 
 
 
