@@ -54,7 +54,9 @@ class Star:
         self.vx = vx
         self.vy = vy
         self.vz = vz
-        self.velocity = self.get_velocity()
+        self.velocity = self.get_velocity()   
+        # ^^^ Should this be a method call or just point to the method? self.velocity was being called below, resulting in an error. 
+        # Either the parentheses above or on line 99 (prev 97 before commit) should be removed.
     
     def get_velocity(self):
         """
